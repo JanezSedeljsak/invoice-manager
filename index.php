@@ -8,7 +8,7 @@ require_once "api/controller/UserController.php";
 require_once "api/utils/Response.php";
 require_once "api/utils/Factory.php";
 
-$path = isset($_SERVER["PATH_INFO"]) ? trim($_SERVER["PATH_INFO"], "/") : "";
+$path = isset($_GET['path']) ? $_GET['path'] : '/';
 $method = $_SERVER['REQUEST_METHOD'];
 
 $apiRoutes = array(

@@ -10,7 +10,7 @@ except ImportError:
     MISSING_REQUESTS = """[WARNING] Your system is missing the Requests package."""
     print('\033[91m' + '\033[1m' + MISSING_REQUESTS + '\033[0m')
 
-base_uri = f"{os.getenv('host') or 'localhost'}/index.php"
+base_uri = f"{os.getenv('host') or 'localhost'}"
 
 class ApiTests(unittest.TestCase):
     def test_existing_and_invalid(self):

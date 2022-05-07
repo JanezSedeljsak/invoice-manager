@@ -4,7 +4,12 @@ require_once "api/utils/Response.php";
 
 class Factory {
     private static function serve_frontend($path) {
-        echo "FRONTEND: " . $path;
+        //extract($variables);
+
+        //ob_start();
+        include('app/build/index.html');
+        $renderedView = ob_get_clean();
+        echo $renderedView;
     }
 
     public static function validate($method, $allowed, $func, $req_id=false) {
