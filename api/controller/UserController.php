@@ -5,16 +5,17 @@ require_once "api/utils/Response.php";
 
 class UserController {
 
-    public static function login() {
-        if (UserDB::validLoginAttempt($_POST["username"], $_POST["password"])) {
-                $vars = [
-                    "username" => $_POST["username"],
-                    "password" => $_POST["password"]
-                ];
+    public static function all() {
+        $users = UserModel::getAll();
+        Response::ok($users);
+    }
 
-                Response::ok($vars);
+    public static function login() {
+        $token = UserModel::login($_POST["username"], $_POST["password"]);
+        if ($token) {
+            Response::ok(array("token" => $token));
         } else {
-                Response::error401();
+            Response::error401();
         }
     }
 

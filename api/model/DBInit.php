@@ -5,7 +5,7 @@ class DBInit {
     private static $host = "localhost";
     private static $user = "root";
     private static $password = "root";
-    private static $schema = "invoice-manager";
+    private static $schema = "invoice_manager";
     private static $instance = null;
 
     private function __construct() {
@@ -23,7 +23,7 @@ class DBInit {
      * 
      * @return PDO instance 
      */
-    public static function get() {
+    public static function connect() {
         if (!self::$instance) {
             $config = "mysql:host=" . self::$host
                     . ";dbname=" . self::$schema;

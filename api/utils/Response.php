@@ -55,7 +55,7 @@ class Response {
     public static function ok($results = array()) {
         http_response_code(200);
         header('Content-Type: application/json; charset=utf-8');
-        $response = json_encode($results);
+        $response = json_encode($results, JSON_PRETTY_PRINT);
         echo $response;
     }
 }

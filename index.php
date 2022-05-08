@@ -5,6 +5,8 @@ define("IMAGES_URL", rtrim($_SERVER["SCRIPT_NAME"], "index.php") . "storage/imag
 
 require_once "api/controller/InvoiceController.php";
 require_once "api/controller/UserController.php";
+require_once "api/controller/GroupController.php";
+
 require_once "api/utils/Response.php";
 require_once "api/utils/Factory.php";
 
@@ -22,8 +24,9 @@ $apiRoutes = array(
 
     "api/v1/login" => fn($method) => Factory::validate($method, array('GET', 'POST'), fn() => UserController::login()),
     "api/v1/register" => fn($method) => Factory::validate($method, array('GET', 'POST'), fn() => UserController::register()),
-    "api/v1/users" => fn($method) => Factory::validate($method, array('GET', 'POST'), fn() => UserController::users()),
+    "api/v1/users" => fn($method) => Factory::validate($method, array('GET', 'POST'), fn() => UserController::all()),
 
+    "api/v1/groups" => fn($method) => Factory::validate($method, array('GET'), fn() => GroupController::all()),
     "api/v1/group/invoices" => fn($method) => Factory::validate($method, array('GET'), fn($id) => InvoiceController::all($id), true),
     "api/v1/group/invoices/print" => fn($method) => Factory::validate($method, array('GET'), fn($id) => InvoiceController::print($id), true),
     "api/v1/group/invoice" => fn($method) => Factory::select_method($method, array(
@@ -42,8 +45,13 @@ $apiRoutes = array(
     "api/v1/status/405" => fn($method) => Factory::validate($method, array('GET'), fn() => Response::error405())
 );
 
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, POST');
+header("Access-Control-Allow-Headers: X-Requested-With");
+
 try {
     Factory::serve(strtolower($path), $method, $apiRoutes);
 } catch (Exception $e) {
     echo "An error occurred: <pre>$path</pre> (500)";
+    echo $e;
 }
