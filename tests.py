@@ -70,6 +70,74 @@ class ApiTests(unittest.TestCase):
             response = requests.get(f'http://{base_uri}/api/v1/status/{staus}')
             self.assertEqual(response.status_code, staus)
 
+
+    def test_auth_system_login(self):
+        """Test login and register and private routes that require valid tokens"""
+
+        response = requests.post(f'http://{base_uri}/api/v1/login') # empty request (bad request - 400)
+        self.assertEqual(response.status_code, 400)
+
+        data = {'email': '', 'password': ''}
+        response = requests.post(f'http://{base_uri}/api/v1/login', data=data) # empty creentials (bad request - 400)
+        self.assertEqual(response.status_code, 400)
+
+        data = {'email': 'invalid@gmail.com', 'password': '____________'}
+        response = requests.post(f'http://{base_uri}/api/v1/login', data=data) # invalid credentials (401)
+        self.assertEqual(response.status_code, 401)
+
+        data = {'email': 'janez.sedeljsak@gmail.com', 'password': 'geslo123'}
+        response = requests.post(f'http://{base_uri}/api/v1/login', data=data) # should get token
+        self.assertEqual(response.status_code, 200)
+
+        json_data = response.json()
+        token = json_data.get('token', None)
+        self.assertNotEqual(None, token) # should get valid token from response
+
+        headers = {'Authorization': token}
+        response = requests.get(f'http://{base_uri}/api/v1/test', headers=headers) # doesn't need token
+        self.assertEqual(response.status_code, 200)
+
+        response = requests.get(f'http://{base_uri}/api/v1/user/invoices', headers=headers) # should validate token
+        self.assertEqual(response.status_code, 200)
+
+        response = requests.get(f'http://{base_uri}/api/v1/user/invoices', headers={}) # no headers
+        self.assertEqual(response.status_code, 401)
+
+        headers = {'Authorization': "invalid-token"}
+        response = requests.get(f'http://{base_uri}/api/v1/user/invoices', headers=headers) # no headers
+        self.assertEqual(response.status_code, 401)
+
+    def test_auth_system_register(self):
+        response = requests.post(f'http://{base_uri}/api/v1/register') # empty request (bad request - 400)
+        self.assertEqual(response.status_code, 400)
+
+        data = {'email': '', 'password': '', 'fullname': ''}
+        response = requests.post(f'http://{base_uri}/api/v1/register', data=data) # empty credentials (bad request - 400)
+        self.assertEqual(response.status_code, 400)
+
+        data = {'email': 'python_generated@gmail.com', 'password': 'geslo123', 'fullname': 'python_generated'}
+        response = requests.post(f'http://{base_uri}/api/v1/register', data=data) # should get token
+        self.assertEqual(response.status_code, 200)
+
+        json_data = response.json()
+        token = json_data.get('token', None)
+        self.assertNotEqual(None, token) # should get valid token from response
+
+        headers = {'Authorization': token}
+        response = requests.get(f'http://{base_uri}/api/v1/test', headers=headers) # doesn't need token
+        self.assertEqual(response.status_code, 200)
+
+        response = requests.get(f'http://{base_uri}/api/v1/user/invoices', headers=headers) # should validate token
+        self.assertEqual(response.status_code, 200)
+
+        response = requests.get(f'http://{base_uri}/api/v1/user/invoices', headers={}) # no headers
+        self.assertEqual(response.status_code, 401)
+
+        headers = {'Authorization': "invalid-token"}
+        response = requests.get(f'http://{base_uri}/api/v1/user/invoices', headers=headers) # no headers
+        self.assertEqual(response.status_code, 401)
+        
+
 if __name__ == '__main__':
     print('\033[96m' + '\033[1m' + f'Testing is done with host: http://{base_uri}' + '\033[0m')
     unittest.main()

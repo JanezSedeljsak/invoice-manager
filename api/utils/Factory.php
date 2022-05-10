@@ -1,18 +1,31 @@
 <?php
 
 require_once "api/utils/Response.php";
+require_once "api/model/AuthModel.php";
 
 class Factory {
     private static function serve_frontend($path) {
-        //extract($variables);
-
-        //ob_start();
         include('app/build/index.html');
         $renderedView = ob_get_clean();
         echo $renderedView;
     }
 
-    public static function validate($method, $allowed, $func, $req_id=false) {
+    public static function req_auth($method, $allowed, $func, $req_id=false) {
+        $headers = apache_request_headers();
+        if (!isset($headers['Authorization'])) {
+            Response::error401();
+            return;
+        }
+
+        if (!AuthModel::validate($headers['Authorization'])) {
+            Response::error401();
+            return;
+        }
+
+        Factory::req($method, $allowed, $func, $req_id=false);
+    }
+
+    public static function req($method, $allowed, $func, $req_id=false) {
         if (in_array($method, $allowed)) {
             if (!$req_id) {
                 $func();

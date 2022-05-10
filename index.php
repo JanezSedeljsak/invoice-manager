@@ -14,21 +14,23 @@ $path = isset($_GET['path']) ? $_GET['path'] : '/';
 $method = $_SERVER['REQUEST_METHOD'];
 
 $apiRoutes = array(
-    "api/v1/test" => fn($method) => Factory::validate($method, array('GET'), fn() => Factory::api_test_route()),
-    "api/v1/test/id" => fn($method) => Factory::validate($method, array('GET'), fn($id) => Factory::api_test_route("testing with ID " . $id), true),
-    "api/v1/test/other" => fn($method) => Factory::validate($method, array('POST', 'DELETE'), fn() => Factory::api_test_route()),
+    "api/v1/test" => fn($method) => Factory::req($method, array('GET'), fn() => Factory::api_test_route()),
+    "api/v1/test/id" => fn($method) => Factory::req($method, array('GET'), fn($id) => Factory::api_test_route("testing with ID " . $id), true),
+    "api/v1/test/other" => fn($method) => Factory::req($method, array('POST', 'DELETE'), fn() => Factory::api_test_route()),
     "api/v1/test/select" => fn($method) => Factory::select_method($method, array(
         "GET" => fn() => Factory::api_test_route("test with GET"),
         "POST" => fn() => Factory::api_test_route("test with POST")
     )),
 
-    "api/v1/login" => fn($method) => Factory::validate($method, array('GET', 'POST'), fn() => UserController::login()),
-    "api/v1/register" => fn($method) => Factory::validate($method, array('GET', 'POST'), fn() => UserController::register()),
-    "api/v1/users" => fn($method) => Factory::validate($method, array('GET', 'POST'), fn() => UserController::all()),
+    "api/v1/login" => fn($method) => Factory::req($method, array('POST'), fn() => UserController::login()),
+    "api/v1/register" => fn($method) => Factory::req($method, array('POST'), fn() => UserController::register()),
+    "api/v1/users" => fn($method) => Factory::req($method, array('GET'), fn() => UserController::all()),
 
-    "api/v1/groups" => fn($method) => Factory::validate($method, array('GET'), fn() => GroupController::all()),
-    "api/v1/group/invoices" => fn($method) => Factory::validate($method, array('GET'), fn($id) => InvoiceController::all($id), true),
-    "api/v1/group/invoices/print" => fn($method) => Factory::validate($method, array('GET'), fn($id) => InvoiceController::print($id), true),
+    "api/v1/user/invoices" => fn($method) => Factory::req_auth($method, array('GET'), fn() => UserController::invoices()),
+
+    "api/v1/groups" => fn($method) => Factory::req($method, array('GET'), fn() => GroupController::all()),
+    "api/v1/group/invoices" => fn($method) => Factory::req($method, array('GET'), fn($id) => InvoiceController::all($id), true),
+    "api/v1/group/invoices/print" => fn($method) => Factory::req($method, array('GET'), fn($id) => InvoiceController::print($id), true),
     "api/v1/group/invoice" => fn($method) => Factory::select_method($method, array(
         "GET" => fn($id) => InvoiceController::get($id),
         "POST" => fn($id) => InvoiceController::insert($id),
@@ -37,14 +39,15 @@ $apiRoutes = array(
     ), true),
 
     // test all status codes
-    "api/v1/status/200" => fn($method) => Factory::validate($method, array('GET'), fn() => Response::ok()),
-    "api/v1/status/400" => fn($method) => Factory::validate($method, array('GET'), fn() => Response::error400()),
-    "api/v1/status/401" => fn($method) => Factory::validate($method, array('GET'), fn() => Response::error401()),
-    "api/v1/status/403" => fn($method) => Factory::validate($method, array('GET'), fn() => Response::error403()),
-    "api/v1/status/404" => fn($method) => Factory::validate($method, array('GET'), fn() => Response::error404()),
-    "api/v1/status/405" => fn($method) => Factory::validate($method, array('GET'), fn() => Response::error405())
+    "api/v1/status/200" => fn($method) => Factory::req($method, array('GET'), fn() => Response::ok()),
+    "api/v1/status/400" => fn($method) => Factory::req($method, array('GET'), fn() => Response::error400()),
+    "api/v1/status/401" => fn($method) => Factory::req($method, array('GET'), fn() => Response::error401()),
+    "api/v1/status/403" => fn($method) => Factory::req($method, array('GET'), fn() => Response::error403()),
+    "api/v1/status/404" => fn($method) => Factory::req($method, array('GET'), fn() => Response::error404()),
+    "api/v1/status/405" => fn($method) => Factory::req($method, array('GET'), fn() => Response::error405())
 );
 
+// Allow cors
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST');
 header("Access-Control-Allow-Headers: X-Requested-With");
