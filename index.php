@@ -24,26 +24,26 @@ $api_routes = array(
     "api/v1/users" => req(['GET'], fn() => UserController::all()), # ok
 
     "api/v1/user/invoices" => req_auth(['GET'], fn() => UserController::invoices()), # testing
-    "api/v1/user/groups" => req_auth(['GET'], fn() => UserController::groups()), # testing
+    "api/v1/user/groups" => req_auth(['GET'], fn() => UserController::groups()), # ok
     "api/v1/user/edit" => req_auth(['POST'], fn() => UserController::edit()), # ok
 
     "api/v1/groups" => req(['GET'], fn() => GroupController::all()), # ok
     "api/v1/group/add-user" => req_auth(['POST'], fn($id) => GroupController::add_user($id), true), # TODO
-    "api/v1/group/members" => req(['GET'], fn($id) => GroupController::members($id), true), # TODO
+    "api/v1/group/members" => req(['GET'], fn($id) => GroupController::members($id), true), # ok
     "api/v1/group/invoices" => req_auth(['GET'], fn($id) => GroupController::invoices($id), true), # TODO
-    "api/v1/group" => req_auth_select([ # TODO
+    "api/v1/group/create" => req_auth(['POST'], fn() => GroupController::insert()), # ok
+    "api/v1/group" => req_auth_select(array( # TODO
         "GET" => fn($id) => GroupController::get($id),
-        "POST" => fn($id) => GroupController::insert($id),
-        "PUT" => fn($id) => GroupController::update($id),
+        "PUT" => fn($id) => GroupController::edit($id),
         "DELETE" => fn($id) => GroupController::delete($id)
-    ], true),
+    ), true),
 
-    "api/v1/invoice" => req_auth_select([ # TODO
+    "api/v1/invoice/create" => req_auth(['POST'], fn() => InvoiceController::insert()), # TODO
+    "api/v1/invoice" => req_auth_select(array( # TODO
         "GET" => fn($id) => InvoiceController::get($id),
-        "POST" => fn($id) => InvoiceController::insert($id),
-        "PUT" => fn($id) => InvoiceController::update($id),
+        "PUT" => fn($id) => InvoiceController::edit($id),
         "DELETE" => fn($id) => InvoiceController::delete($id)
-    ], true),
+    ), true),
 
     "api/v1/stores" => req(['GET'], fn() => StoreController::all()), # TODO
 );

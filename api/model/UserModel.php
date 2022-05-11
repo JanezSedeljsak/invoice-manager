@@ -14,7 +14,7 @@ class UserModel {
         $stmt = $db->prepare($query);
         $pwd = Service::hash($email, $password);
         $stmt->execute(array('email' => $email, 'password' => $pwd, 'user_id' => $user_id));
-        if ($user = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        if ($user = $stmt->fetch()) {
             return true;
         }
 
@@ -45,7 +45,7 @@ class UserModel {
         $pwd = Service::hash($email, $password);
 
         $stmt->execute(array('email' => $email, 'password' => $pwd));
-        if ($user = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        if ($user = $stmt->fetch()) {
             $token = Service::uuid();
             AuthModel::create($user['id'], $token);
             return $token;
@@ -96,7 +96,7 @@ class UserModel {
             FROM `group` g
             INNER JOIN `group_user` gu ON gu.group_id = g.id
             WHERE gu.user_id = :user_id 
-            ORDER BY i.date
+            ORDER BY g.name
         ");
         $statement->execute(array('user_id' => $user_id));
 

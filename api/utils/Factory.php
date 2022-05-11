@@ -59,7 +59,7 @@ class Factory {
             return;
         }
 
-        Factory::select_method($allowed, $func, $req_id);
+        Factory::select_method($allowed_methods, $req_id);
     }
 
     public static function select_method($allowed_methods, $req_id=false) {

@@ -1,3 +1,4 @@
+from tokenize import group
 import unittest
 import os
 from dotenv import load_dotenv # pip install python-dotenv
@@ -139,7 +140,6 @@ class ApiTests(unittest.TestCase):
         response = requests.get(f'http://{base_uri}/api/v1/user/invoices', headers=headers) # no headers
         self.assertEqual(response.status_code, 401)
 
-
     def test_user_update(self):
         """Test updating profile credentials"""
         # we assume `python_generated@gmail.com` is a valid user
@@ -195,7 +195,49 @@ class ApiTests(unittest.TestCase):
         json_data = response.json()
         token = json_data.get('token', None)
         self.assertNotEqual(None, token) # should get valid token from response
-    
+
+    def test_group_manipulation(self):
+        """Creating groups updating, deleting"""
+
+        response = requests.post(f'http://{base_uri}/api/v1/group/create') # missing auth header (401)
+        self.assertEqual(response.status_code, 401)
+
+        data = {'email': 'python_generated@gmail.com', 'password': 'geslo123'}
+        response = requests.post(f'http://{base_uri}/api/v1/login', data=data) # should get token
+        self.assertEqual(response.status_code, 200)
+
+        json_data = response.json()
+        token = json_data.get('token', None)
+        self.assertNotEqual(None, token) # should get valid token from response
+        headers = {'Authorization': token}
+
+        response = requests.post(f'http://{base_uri}/api/v1/group/create', headers=headers) # missing data 400
+        self.assertEqual(response.status_code, 400)
+
+        data = {'name': 'Python group'}
+        response = requests.post(f'http://{base_uri}/api/v1/group/create', headers=headers, data=data) # missing data 400
+        self.assertEqual(response.status_code, 200)
+
+        response = requests.get(f'http://{base_uri}/api/v1/user/groups', headers=headers)
+        json_data = response.json()
+        self.assertEqual(len(json_data), 1)  # should get only one group
+        group_id = json_data[0]['id']
+
+        response = requests.get(f'http://{base_uri}/api/v1/group')
+        self.assertEqual(response.status_code, 401) # get is private method
+
+        response = requests.get(f'http://{base_uri}/api/v1/group?id={group_id}', headers=headers)
+        self.assertEqual(response.status_code, 200)
+
+        response = requests.get(f'http://{base_uri}/api/v1/group/members?id={group_id}')
+        self.assertEqual(response.status_code, 200)
+
+        json_data = response.json()
+        self.assertEqual(len(json_data), 1) # should only have one user
+        self.assertEqual('python_generated', json_data[0]['fullname']) # should be generated user
+
+
+        
 
 if __name__ == '__main__':
     print('\033[96m' + '\033[1m' + f'Testing is done with host: http://{base_uri}' + '\033[0m')

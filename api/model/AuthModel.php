@@ -26,7 +26,7 @@ class AuthModel {
         $stmt = $db->prepare($query);
 
         $stmt->execute(array('token' => $token));
-        if ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        if ($result = $stmt->fetch()) {
             $_REQUEST['user_id'] = $result['user_id'];
             return true;
         }
