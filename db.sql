@@ -6,7 +6,6 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+02:00";
 
 DROP TABLE IF EXISTS `store`;
-/*DROP TABLE IF EXISTS `group_invoice`;*/
 DROP TABLE IF EXISTS `group_user`;
 DROP TABLE IF EXISTS `invoice`;
 DROP TABLE IF EXISTS `group`;
@@ -51,15 +50,11 @@ CREATE TABLE `invoice` (
 
 CREATE TABLE `group_user` (
   `id` INT PRIMARY KEY AUTO_INCREMENT,
+  `joined_at` DATETIME NOT NULL DEFAULT NOW(),
   `group_id` INT NOT NULL REFERENCES `group`(`id`) ON DELETE CASCADE,
-  `user_id` INT NOT NULL REFERENCES `user`(`id`) ON DELETE CASCADE
+  `user_id` INT NOT NULL REFERENCES `user`(`id`) ON DELETE CASCADE,
+  `added_by` INT NOT NULL REFERENCES `user`(`id`) ON DELETE CASCADE
 );
-
-/*CREATE TABLE `group_invoice` (
-  `id` INT PRIMARY KEY AUTO_INCREMENT,
-  `group_id` INT NOT NULL REFERENCES `group`(`id`) ON DELETE CASCADE,
-  `invoice_id` INT NOT NULL REFERENCES `invoice`(`id`) ON DELETE CASCADE
-);*/
 
 INSERT INTO `store` (name) VALUES
 ('Spar'),

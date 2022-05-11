@@ -10,7 +10,45 @@ class GroupController {
         Response::ok($groups);
     }
 
+    public static function add_user($id) {
+        $group = GroupModel::get($id);
+        if (!$group) {
+            Response::error404(); // record not found
+            return;
+        }
+
+        if (!Service::validate_keys(['user_id'], $_POST)) {
+            Response::error400();
+            return;
+        }
+
+        $has_permissions = GroupModel::has_members_permissions($id, $_REQUEST['user_id']);
+        if (!$has_permissions) {
+            Response::error401();
+            return;
+        }
+        
+        $ok = GroupModel::add_user($_POST['user_id'], $id, $_REQUEST['user_id']);
+        if ($ok) {
+            Response::ok(array("ok" => $ok));
+        } else {
+            Response::error400();
+        }
+    }
+
     public static function invoices($id) {
+        $group = GroupModel::get($id);
+        if (!$group) {
+            Response::error404(); // record not found
+            return;
+        }
+
+        $has_permissions = GroupModel::has_members_permissions($id, $_REQUEST['user_id']);
+        if (!$has_permissions) {
+            Response::error401();
+            return;
+        }
+
         $group_invoices = GroupModel::get_invoices($id);
         Response::ok($group_invoices);
     }
@@ -20,16 +58,27 @@ class GroupController {
         Response::ok($group_members);
     }
 
+    public static function potential_members($id) {
+        $potential_members = GroupModel::users_not_int_group($id);
+        Response::ok($potential_members);
+    }
+
     public static function get($id) {
         $group = GroupModel::get($id);
-        if ($group) {
-            $members = GroupModel::get_members($id);
-            $group['members'] = $members;
-            Response::ok($group);
+        if (!$group) {
+            Response::error404(); // record not found
             return;
         }
 
-        Response::error404(); // record not found
+        $has_permissions = GroupModel::has_members_permissions($id, $_REQUEST['user_id']);
+        if (!$has_permissions) {
+            Response::error401();
+            return;
+        }
+
+        $members = GroupModel::get_members($id);
+        $group['members'] = $members;
+        Response::ok($group);
     }
 
     public static function insert() {
@@ -47,18 +96,19 @@ class GroupController {
     }
 
     public static function delete($id) {
-        if (!Service::validate_keys(['id'], $_POST)) {
-            Response::error400();
-            return;
-        }
-
         $group = GroupModel::get($id);
         if (!$group) {
             Response::error404(); // record not found
             return;
         }
 
-        $ok = GroupModel::delete($_POST['id'], $_REQUEST['user_id']);
+        $has_permissions = GroupModel::has_members_permissions($id, $_REQUEST['user_id']);
+        if (!$has_permissions) {
+            Response::error401();
+            return;
+        }
+
+        $ok = GroupModel::delete($id);
         if ($ok) {
             Response::ok(array("ok" => $ok));
         } else {
@@ -67,7 +117,7 @@ class GroupController {
     }
 
     public static function edit($id) {
-        if (!Service::validate_keys(['id', 'name'], $_POST)) {
+        if (!Service::validate_keys(['name'], $_POST)) {
             Response::error400();
             return;
         }
@@ -78,7 +128,13 @@ class GroupController {
             return;
         }
 
-        $ok = GroupModel::edit($_POST['id'], $_POST['name'], $_REQUEST['user_id']);
+        $has_permissions = GroupModel::has_members_permissions($id, $_REQUEST['user_id']);
+        if (!$has_permissions) {
+            Response::error401();
+            return;
+        }
+
+        $ok = GroupModel::edit($id, $_POST['name']);
         if ($ok) {
             Response::ok(array("ok" => $ok));
         } else {

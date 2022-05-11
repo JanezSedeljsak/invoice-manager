@@ -13,6 +13,17 @@ class GroupModel {
         return $statement->fetchAll();
     }
 
+    public static function has_members_permissions($group_id, $user_id) {
+        $members = GroupModel::get_members($group_id);
+        foreach ($members as $member) {
+            if ($member['id'] == $user_id) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public static function get_invoices($group_id) {
         $db = DBInit::connect();
 
@@ -26,9 +37,10 @@ class GroupModel {
         $db = DBInit::connect();
 
         $statement = $db->prepare("
-            SELECT u.id, u.fullname, u.email
+            SELECT u.id, u.fullname, u.email, gu.added_by, gu.joined_at, u2.fullname added_by_fullname, u2.email added_by_email
             FROM `user` u
             INNER JOIN `group_user` gu ON gu.user_id = u.id
+            LEFT OUTER JOIN `user` u2 ON u2.id = gu.added_by 
             WHERE gu.group_id = :group_id 
             ORDER BY u.fullname
         ");
@@ -37,10 +49,18 @@ class GroupModel {
         return $statement->fetchAll();  
     }
 
+    public static function add_user($user_id, $group_id, $added_by) {
+        $db = DBInit::connect();
+
+        $statement = $db->prepare("INSERT INTO `group_user` (`group_id`, `user_id`, `added_by`) VALUES (:group_id, :user_id, :added_by)");
+        $statement->execute(array("group_id" => $group_id, "user_id" => $user_id, "added_by" => $added_by));
+        return true;
+    }
+
     public static function get($id) {
         $db = DBInit::connect();
 
-        $statement = $db->prepare("SELECT id, name FROM `group` WHERE id = :id");
+        $statement = $db->prepare("SELECT id, name, created_at FROM `group` WHERE id = :id");
         $statement->execute(array("id" => $id));
 
         return $statement->fetch();
@@ -53,14 +73,37 @@ class GroupModel {
         $statement->execute(array("name" => $name));
 
         $group_id = $db->lastInsertId();
-        $statement = $db->prepare("INSERT INTO `group_user` (group_id, user_id) VALUES (:group_id, :user_id)");
-        $statement->execute(array("group_id" => $group_id, "user_id" => $user_id));
+        $statement = $db->prepare("INSERT INTO `group_user` (group_id, user_id, added_by) VALUES (:group_id, :user_id, :added_by)");
+        $statement->execute(array("group_id" => $group_id, "user_id" => $user_id, "added_by" => $user_id));
         return true;
     }
 
-    public static function edit($id, $name, $user_id) {
+    public static function edit($id, $name) {
+        $db = DBInit::connect();
 
+        $stmt = $db->prepare("UPDATE `group` SET name = :name WHERE id = :id;");
+        $stmt->execute(array('name' => $name, 'id' => $id));
+        return true;
     }
 
-    public static function delete($id, $user_id) {}
+    public static function delete($id) {
+        $db = DBInit::connect();
+
+        $statement = $db->prepare("DELETE FROM `group` WHERE id = :id");
+        $statement->execute(array("id" => $id));
+        return true;
+    }
+
+    public static function users_not_int_group($id) {
+        $db = DBInit::connect();
+
+        $statement = $db->prepare("
+            SELECT id, fullname, email FROM `user` WHERE id NOT IN (
+                SELECT user_id FROM `group_user` WHERE group_id = :id
+            )
+        ");
+        $statement->execute(array("id" => $id));
+        
+        return $statement->fetchAll();
+    }
 }

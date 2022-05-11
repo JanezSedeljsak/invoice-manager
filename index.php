@@ -28,24 +28,25 @@ $api_routes = array(
     "api/v1/user/edit" => req_auth(['POST'], fn() => UserController::edit()), # ok
 
     "api/v1/groups" => req(['GET'], fn() => GroupController::all()), # ok
-    "api/v1/group/add-user" => req_auth(['POST'], fn($id) => GroupController::add_user($id), true), # TODO
+    "api/v1/group/add-user" => req_auth(['POST'], fn($id) => GroupController::add_user($id), true), # ok
     "api/v1/group/members" => req(['GET'], fn($id) => GroupController::members($id), true), # ok
+    "api/v1/group/potential-members" => req(['GET'], fn($id) => GroupController::potential_members($id), true), # ok
     "api/v1/group/invoices" => req_auth(['GET'], fn($id) => GroupController::invoices($id), true), # TODO
     "api/v1/group/create" => req_auth(['POST'], fn() => GroupController::insert()), # ok
-    "api/v1/group" => req_auth_select(array( # TODO
-        "GET" => fn($id) => GroupController::get($id),
-        "PUT" => fn($id) => GroupController::edit($id),
-        "DELETE" => fn($id) => GroupController::delete($id)
+    "api/v1/group" => req_auth_select(array(
+        "GET" => fn($id) => GroupController::get($id), # ok
+        "POST" => fn($id) => GroupController::edit($id), # ok
+        "DELETE" => fn($id) => GroupController::delete($id) # ok
     ), true),
 
     "api/v1/invoice/create" => req_auth(['POST'], fn() => InvoiceController::insert()), # TODO
     "api/v1/invoice" => req_auth_select(array( # TODO
         "GET" => fn($id) => InvoiceController::get($id),
-        "PUT" => fn($id) => InvoiceController::edit($id),
+        "POST" => fn($id) => InvoiceController::edit($id),
         "DELETE" => fn($id) => InvoiceController::delete($id)
     ), true),
 
-    "api/v1/stores" => req(['GET'], fn() => StoreController::all()), # TODO
+    "api/v1/stores" => req(['GET'], fn() => StoreController::all()), # ok
 );
 
 $test_routes = array(
@@ -56,7 +57,12 @@ $test_routes = array(
     "api/v1/test/status/404" => req(['GET'], fn() => Response::error404()),
     "api/v1/test/status/405" => req(['GET'], fn() => Response::error405()),
 
-    // testing core functionality
+    "api/v1/test/method-get" => req(['GET'], fn() => Response::ok()),
+    "api/v1/test/method-post" => req(['POST'], fn() => Response::ok()),
+    "api/v1/test/method-put" => req(['PUT'], fn() => Response::ok()),
+    "api/v1/test/method-delete" => req(['DELETE'], fn() => Response::ok()),
+
+    // testing core functionality (+ restrictions)
     "api/v1/test" => req(['GET'], fn() => Factory::api_test_route()),
     "api/v1/test/id" => req(['GET'], fn($id) => Factory::api_test_route("testing with ID " . $id), true),
     "api/v1/test/other" => req(['POST', 'DELETE'], fn() => Factory::api_test_route()),
