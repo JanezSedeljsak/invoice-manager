@@ -67,7 +67,7 @@ class ApiTests(unittest.TestCase):
         """Status code should be correctly sent based on Response class in Response.php file!"""
 
         for staus in (200, 400, 401, 403, 404, 405):
-            response = requests.get(f'http://{base_uri}/api/v1/status/{staus}')
+            response = requests.get(f'http://{base_uri}/api/v1/test/status/{staus}')
             self.assertEqual(response.status_code, staus)
 
 

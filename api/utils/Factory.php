@@ -10,7 +10,7 @@ class Factory {
         echo $renderedView;
     }
 
-    public static function req_auth($method, $allowed, $func, $req_id=false) {
+    public static function req_auth($allowed, $func, $req_id=false) {
         $headers = apache_request_headers();
         if (!isset($headers['Authorization'])) {
             Response::error401();
@@ -22,10 +22,12 @@ class Factory {
             return;
         }
 
-        Factory::req($method, $allowed, $func, $req_id=false);
+        Factory::req($allowed, $func, $req_id=false);
     }
 
-    public static function req($method, $allowed, $func, $req_id=false) {
+    public static function req($allowed, $func, $req_id=false) {
+        $method = $_SERVER['REQUEST_METHOD'];
+
         if (in_array($method, $allowed)) {
             if (!$req_id) {
                 $func();
@@ -45,7 +47,9 @@ class Factory {
         Response::error405($message);
     }
 
-    public static function select_method($method, $allowed_methods, $req_id=false) {
+    public static function select_method($allowed_methods, $req_id=false) {
+        $method = $_SERVER['REQUEST_METHOD'];
+
         if (isset($allowed_methods[$method])) {
             if (!$req_id) {
                 $allowed_methods[$method]();
@@ -65,7 +69,9 @@ class Factory {
         Response::error405($message);
     }
 
-    public static function serve_api_route($path, $method, $routes) {
+    public static function serve_api_route($path, $routes) {
+        $method = $_SERVER['REQUEST_METHOD'];
+
         // try to get route else 404
         if (isset($routes[$path])) {
             $routes[$path]($method);
@@ -78,11 +84,12 @@ class Factory {
         Response::ok(array("status" => $str));
     }
 
-    public static function serve($path, $method, $routes) {
+    public static function serve($path, $routes) {
+        $method = $_SERVER['REQUEST_METHOD'];
 
         // if not get it has to be api route
         if ($method !== 'GET') {
-            Factory::serve_api_route($path, $method, $routes);
+            Factory::serve_api_route($path, $routes);
             return;
         }
 
@@ -100,7 +107,7 @@ class Factory {
             return;
         }
 
-        Factory::serve_api_route($path, $method, $routes);
+        Factory::serve_api_route($path, $routes);
     }
 }
 
