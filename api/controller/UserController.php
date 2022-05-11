@@ -16,6 +16,35 @@ class UserController {
         Response::ok($userInvoices);
     }
 
+    public static function groups() {
+        $user_id = $_REQUEST['user_id'];
+        $userInvoices = UserModel::get_groups($user_id);
+        Response::ok($userInvoices);
+    }
+
+    public static function edit() {
+        $user_id = $_REQUEST['user_id'];
+
+        if (!Service::validate_keys(array('fullname', 'email', 'password', 'old_email', 'old_password'), $_POST)) {
+            Response::error400();
+            return;
+        }
+
+        var_dump($user_id);
+        if (!UserModel::validate_credentials($user_id, $_POST['old_email'], $_POST['old_password'])) {
+            Response::error401(); // invalid password
+            return;
+        }
+        
+        $ok = UserModel::update_credentials($user_id, $_POST['fullname'], $_POST['email'], $_POST['password']);
+        if ($ok) {
+            Response::ok(array("ok" => $ok));
+        } else {
+            Respoonse::error400();
+        }
+       
+    }
+
     public static function login() {
         if (!Service::validate_keys(array('email', 'password'), $_POST)) {
             Response::error400();

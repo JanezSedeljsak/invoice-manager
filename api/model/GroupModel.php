@@ -7,7 +7,7 @@ class GroupModel {
     public static function getAll() {
         $db = DBInit::connect();
 
-        $statement = $db->prepare("SELECT name, created_at FROM `group` ORDER BY name");
+        $statement = $db->prepare("SELECT id, name, created_at FROM `group` ORDER BY name");
         $statement->execute();
 
         return $statement->fetchAll();

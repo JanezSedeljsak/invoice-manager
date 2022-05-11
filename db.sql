@@ -5,7 +5,8 @@ use invoice_manager;
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+02:00";
 
-DROP TABLE IF EXISTS `group_invoice`;
+DROP TABLE IF EXISTS `store`;
+/*DROP TABLE IF EXISTS `group_invoice`;*/
 DROP TABLE IF EXISTS `group_user`;
 DROP TABLE IF EXISTS `invoice`;
 DROP TABLE IF EXISTS `group`;
@@ -19,20 +20,16 @@ CREATE TABLE `user` (
   `password` VARCHAR(255) NOT NULL
 );
 
+CREATE TABLE `store` (
+  `id` INT PRIMARY KEY AUTO_INCREMENT,
+  `name` VARCHAR(255) NOT NULL
+);
+
 CREATE TABLE `auth` (
   `id` INT PRIMARY KEY AUTO_INCREMENT,
   `expiration` DATETIME NOT NULL DEFAULT DATE_ADD(NOW(), INTERVAL 1 DAY),
   `user_id` INT NOT NULL REFERENCES `user`(`id`) ON DELETE CASCADE,
   `token` VARCHAR(255) NOT NULL
-);
-
-CREATE TABLE `invoice` (
-  `id` INT PRIMARY KEY AUTO_INCREMENT,
-  `image` VARCHAR(255) NULL,
-  `date` DATETIME NOT NULL DEFAULT NOW(),
-  `user_id` INT NOT NULL REFERENCES `user`(`id`) ON DELETE CASCADE,
-  `amount` INT NOT NULL,
-  `notes` TEXT NULL
 );
 
 CREATE TABLE `group` (
@@ -41,18 +38,41 @@ CREATE TABLE `group` (
   `created_at` DATETIME NOT NULL DEFAULT NOW()
 );
 
+CREATE TABLE `invoice` (
+  `id` INT PRIMARY KEY AUTO_INCREMENT,
+  `image` VARCHAR(255) NULL,
+  `date` DATETIME NOT NULL DEFAULT NOW(),
+  `user_id` INT NOT NULL REFERENCES `user`(`id`) ON DELETE CASCADE,
+  `group_id` INT NULL REFERENCES `group`(`id`) ON DELETE CASCADE,
+  `store_id` INT NULL REFERENCES `store`(`id`) ON DELETE CASCADE,
+  `amount` INT NOT NULL,
+  `notes` TEXT NULL
+);
+
 CREATE TABLE `group_user` (
   `id` INT PRIMARY KEY AUTO_INCREMENT,
   `group_id` INT NOT NULL REFERENCES `group`(`id`) ON DELETE CASCADE,
   `user_id` INT NOT NULL REFERENCES `user`(`id`) ON DELETE CASCADE
 );
 
-CREATE TABLE `group_invoice` (
+/*CREATE TABLE `group_invoice` (
   `id` INT PRIMARY KEY AUTO_INCREMENT,
   `group_id` INT NOT NULL REFERENCES `group`(`id`) ON DELETE CASCADE,
   `invoice_id` INT NOT NULL REFERENCES `invoice`(`id`) ON DELETE CASCADE
-);
+);*/
 
+INSERT INTO `store` (name) VALUES
+('Spar'),
+('Tuš'),
+('Merkator'),
+('Ikea'),
+('Hervis'),
+('Merkur'),
+('Hofer'),
+('Lidl'),
+('Muller'),
+('Intersport'),
+('Other');
 
 /* geslo je v vseh primerih geslo123 */
 INSERT INTO `user` (fullname, email, password) VALUES
@@ -69,6 +89,6 @@ INSERT INTO `group` (name) VALUES
 ('Veselo Stanovanje'), 
 ('Domaca zapravljanja'), 
 ('Janezi'),
-('John, Lorem pa Francka')
+('John, Lorem pa Francka');
 
 

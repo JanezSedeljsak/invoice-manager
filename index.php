@@ -11,6 +11,7 @@ header("Access-Control-Allow-Headers: X-Requested-With");
 require_once "api/controller/InvoiceController.php";
 require_once "api/controller/UserController.php";
 require_once "api/controller/GroupController.php";
+require_once "api/controller/StoreController.php";
 
 require_once "api/utils/Response.php";
 require_once "api/utils/Factory.php";
@@ -18,48 +19,51 @@ require_once "api/utils/Factory.php";
 $path = isset($_GET['path']) ? $_GET['path'] : '/';
 
 $api_routes = array(
-    "api/v1/login" => fn() => Factory::req(array('POST'), fn() => UserController::login()),
-    "api/v1/register" => fn() => Factory::req(array('POST'), fn() => UserController::register()),
-    "api/v1/users" => fn() => Factory::req(array('GET'), fn() => UserController::all()),
+    "api/v1/login" => req(['POST'], fn() => UserController::login()), # ok
+    "api/v1/register" => req(['POST'], fn() => UserController::register()), # ok
+    "api/v1/users" => req(['GET'], fn() => UserController::all()), # ok
 
-    "api/v1/user/invoices" => fn() => Factory::req_auth(array('GET'), fn() => UserController::invoices()),
-    "api/v1/user/edit" => fn() => Factory::req_auth(array('GET'), fn() => UserController::update()), # TODO
+    "api/v1/user/invoices" => req_auth(['GET'], fn() => UserController::invoices()), # testing
+    "api/v1/user/groups" => req_auth(['GET'], fn() => UserController::groups()), # testing
+    "api/v1/user/edit" => req_auth(['POST'], fn() => UserController::edit()), # ok
 
-    "api/v1/groups" => fn() => Factory::req(array('GET'), fn() => GroupController::all()),
-    "api/v1/group/add-user" => fn() => Factory::req_auth(array('POST'), fn($id) => GroupController::add_user($id), true), # TODO
-    "api/v1/group/members" => fn() => Factory::req(array('GET'), fn($id) => GroupController::members($id), true), # TODO
-    "api/v1/group/invoices" => fn() => Factory::req_auth(array('GET'), fn($id) => GroupController::invoices($id), true), # TODO
-    "api/v1/group" => fn() => Factory::select_method(array( # TODO
+    "api/v1/groups" => req(['GET'], fn() => GroupController::all()), # ok
+    "api/v1/group/add-user" => req_auth(['POST'], fn($id) => GroupController::add_user($id), true), # TODO
+    "api/v1/group/members" => req(['GET'], fn($id) => GroupController::members($id), true), # TODO
+    "api/v1/group/invoices" => req_auth(['GET'], fn($id) => GroupController::invoices($id), true), # TODO
+    "api/v1/group" => req_auth_select([ # TODO
         "GET" => fn($id) => GroupController::get($id),
         "POST" => fn($id) => GroupController::insert($id),
         "PUT" => fn($id) => GroupController::update($id),
         "DELETE" => fn($id) => GroupController::delete($id)
-    ), true),
+    ], true),
 
-    "api/v1/invoice" => fn() => Factory::select_method(array( # TODO
+    "api/v1/invoice" => req_auth_select([ # TODO
         "GET" => fn($id) => InvoiceController::get($id),
         "POST" => fn($id) => InvoiceController::insert($id),
         "PUT" => fn($id) => InvoiceController::update($id),
         "DELETE" => fn($id) => InvoiceController::delete($id)
-    ), true)
+    ], true),
+
+    "api/v1/stores" => req(['GET'], fn() => StoreController::all()), # TODO
 );
 
 $test_routes = array(
-    "api/v1/test/status/200" => fn() => Factory::req(array('GET'), fn() => Response::ok()),
-    "api/v1/test/status/400" => fn() => Factory::req(array('GET'), fn() => Response::error400()),
-    "api/v1/test/status/401" => fn() => Factory::req(array('GET'), fn() => Response::error401()),
-    "api/v1/test/status/403" => fn() => Factory::req(array('GET'), fn() => Response::error403()),
-    "api/v1/test/status/404" => fn() => Factory::req(array('GET'), fn() => Response::error404()),
-    "api/v1/test/status/405" => fn() => Factory::req(array('GET'), fn() => Response::error405()),
+    "api/v1/test/status/200" => req(['GET'], fn() => Response::ok()),
+    "api/v1/test/status/400" => req(['GET'], fn() => Response::error400()),
+    "api/v1/test/status/401" => req(['GET'], fn() => Response::error401()),
+    "api/v1/test/status/403" => req(['GET'], fn() => Response::error403()),
+    "api/v1/test/status/404" => req(['GET'], fn() => Response::error404()),
+    "api/v1/test/status/405" => req(['GET'], fn() => Response::error405()),
 
     // testing core functionality
-    "api/v1/test" => fn() => Factory::req(array('GET'), fn() => Factory::api_test_route()),
-    "api/v1/test/id" => fn() => Factory::req(array('GET'), fn($id) => Factory::api_test_route("testing with ID " . $id), true),
-    "api/v1/test/other" => fn() => Factory::req(array('POST', 'DELETE'), fn() => Factory::api_test_route()),
-    "api/v1/test/select" => fn() => Factory::select_method(array(
+    "api/v1/test" => req(['GET'], fn() => Factory::api_test_route()),
+    "api/v1/test/id" => req(['GET'], fn($id) => Factory::api_test_route("testing with ID " . $id), true),
+    "api/v1/test/other" => req(['POST', 'DELETE'], fn() => Factory::api_test_route()),
+    "api/v1/test/select" => req_select([
         "GET" => fn() => Factory::api_test_route("test with GET"),
         "POST" => fn() => Factory::api_test_route("test with POST")
-    ))
+    ])
 );
 
 $routes = array_merge($api_routes, $test_routes);

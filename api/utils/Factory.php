@@ -22,7 +22,7 @@ class Factory {
             return;
         }
 
-        Factory::req($allowed, $func, $req_id=false);
+        Factory::req($allowed, $func, $req_id);
     }
 
     public static function req($allowed, $func, $req_id=false) {
@@ -45,6 +45,21 @@ class Factory {
 
         $message = sprintf("Method %s is not allowed on this route we only allow (%s)", $method, implode(", ", $allowed));
         Response::error405($message);
+    }
+
+    public static function select_method_auth($allowed_methods, $req_id=false) {
+        $headers = apache_request_headers();
+        if (!isset($headers['Authorization'])) {
+            Response::error401();
+            return;
+        }
+
+        if (!AuthModel::validate($headers['Authorization'])) {
+            Response::error401();
+            return;
+        }
+
+        Factory::select_method($allowed, $func, $req_id);
     }
 
     public static function select_method($allowed_methods, $req_id=false) {
@@ -109,6 +124,26 @@ class Factory {
 
         Factory::serve_api_route($path, $routes);
     }
+}
+
+/**
+ * Function wrappers for requests
+ */
+function req($allowed, $func, $req_id=false) { 
+    return fn() => Factory::req($allowed, $func, $req_id); 
+}
+
+function req_auth($allowed, $func, $req_id=false) { 
+    return fn() => Factory::req_auth($allowed, $func, $req_id); 
+}
+
+function req_select($allowed_methods, $req_id=false) { 
+    return fn() => Factory::select_method($allowed_methods, $req_id); 
+}
+
+function req_auth_select($allowed_methods, $req_id=false) { 
+    return fn() => Factory::select_method_auth($allowed_methods, $req_id); 
+
 }
 
 ?>

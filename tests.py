@@ -72,7 +72,7 @@ class ApiTests(unittest.TestCase):
 
 
     def test_auth_system_login(self):
-        """Test login and register and private routes that require valid tokens"""
+        """Test login and private routes that require valid tokens"""
 
         response = requests.post(f'http://{base_uri}/api/v1/login') # empty request (bad request - 400)
         self.assertEqual(response.status_code, 400)
@@ -108,6 +108,8 @@ class ApiTests(unittest.TestCase):
         self.assertEqual(response.status_code, 401)
 
     def test_auth_system_register(self):
+        """Test register and private routes that require valid tokens"""
+
         response = requests.post(f'http://{base_uri}/api/v1/register') # empty request (bad request - 400)
         self.assertEqual(response.status_code, 400)
 
@@ -136,7 +138,64 @@ class ApiTests(unittest.TestCase):
         headers = {'Authorization': "invalid-token"}
         response = requests.get(f'http://{base_uri}/api/v1/user/invoices', headers=headers) # no headers
         self.assertEqual(response.status_code, 401)
+
+
+    def test_user_update(self):
+        """Test updating profile credentials"""
+        # we assume `python_generated@gmail.com` is a valid user
+
+        response = requests.post(f'http://{base_uri}/api/v1/user/edit') # missing auth header (401)
+        self.assertEqual(response.status_code, 401)
+
+        response = requests.post(f'http://{base_uri}/api/v1/user/edit', data={}) # missing auth header (401)
+        self.assertEqual(response.status_code, 401)
+
+        data = {'email': 'python_generated@gmail.com', 'password': 'geslo123'}
+        response = requests.post(f'http://{base_uri}/api/v1/login', data=data) # should get token
+        self.assertEqual(response.status_code, 200)
+
+        json_data = response.json()
+        token = json_data.get('token', None)
+        self.assertNotEqual(None, token) # should get valid token from response
+        headers = {'Authorization': token}
+
+        response = requests.get(f'http://{base_uri}/api/v1/user/edit', headers=headers) # method not allowed
+        self.assertEqual(response.status_code, 405)
+
+        response = requests.post(f'http://{base_uri}/api/v1/user/edit', headers=headers) # missing data (400)
+        self.assertEqual(response.status_code, 400)
         
+        data = {'fullname': 'Random name', 'email': 'python_generated@gmail.com', 'password': 'geslo1234', 'old_password': 'invalid_old'}
+        response = requests.post(f'http://{base_uri}/api/v1/user/edit', data=data, headers=headers) # missing `old_email`
+        self.assertEqual(response.status_code, 400)
+
+        data = {
+            'fullname': 'Random name', 'email': 'python_generated12@gmail.com', 
+            'password': 'geslo1234', 'old_password': 'invalid_old', 'old_email': 'python_generated@gmail.com'
+        }
+        response = requests.post(f'http://{base_uri}/api/v1/user/edit', data=data, headers=headers) # invalid old_password
+        self.assertEqual(response.status_code, 401)
+
+        data['old_password'] = 'geslo123'
+        response = requests.post(f'http://{base_uri}/api/v1/user/edit', data=data, headers=headers) # should update profile
+        self.assertEqual(response.status_code, 200)
+
+        data = {'email': 'python_generated@gmail.com', 'password': 'geslo123'}
+        response = requests.post(f'http://{base_uri}/api/v1/login', data=data) # old credentials are invalid
+        self.assertEqual(response.status_code, 401)
+
+        data = {'email': 'python_generated12@gmail.com', 'password': 'geslo123'}
+        response = requests.post(f'http://{base_uri}/api/v1/login', data=data) # old credentials are invalid
+        self.assertEqual(response.status_code, 401)
+
+        data = {'email': 'python_generated12@gmail.com', 'password': 'geslo1234'}
+        response = requests.post(f'http://{base_uri}/api/v1/login', data=data) # should get token with new credentials
+        self.assertEqual(response.status_code, 200)
+
+        json_data = response.json()
+        token = json_data.get('token', None)
+        self.assertNotEqual(None, token) # should get valid token from response
+    
 
 if __name__ == '__main__':
     print('\033[96m' + '\033[1m' + f'Testing is done with host: http://{base_uri}' + '\033[0m')
