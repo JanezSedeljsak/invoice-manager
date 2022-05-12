@@ -69,10 +69,10 @@ class GroupModel {
     public static function insert($name, $user_id) {
         $db = DBInit::connect();
 
-        $statement = $db->prepare("INSERT INTO `group` (`name`) VALUES (:name)");
-        $statement->execute(array("name" => $name));
+        $group_id = Service::uuid();
+        $statement = $db->prepare("INSERT INTO `group` (`id`, `name`) VALUES (:group_id, :name)");
+        $statement->execute(array("name" => $name, "group_id" => $group_id));
 
-        $group_id = $db->lastInsertId();
         $statement = $db->prepare("INSERT INTO `group_user` (group_id, user_id, added_by) VALUES (:group_id, :user_id, :added_by)");
         $statement->execute(array("group_id" => $group_id, "user_id" => $user_id, "added_by" => $user_id));
         return true;

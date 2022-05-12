@@ -1,4 +1,4 @@
-from tokenize import group
+import uuid
 import unittest
 import os
 from dotenv import load_dotenv # pip install python-dotenv
@@ -25,6 +25,27 @@ class ApiTests(unittest.TestCase):
             return token
         
         return None
+
+    @staticmethod
+    def get_user_id_by_email(email):
+        response = requests.get(f'http://{base_uri}/api/v1/users')
+        users = response.json()
+        for user in users:
+            if user['email'] == email:
+                return user['id']
+
+        return -1
+
+    @staticmethod
+    def get_group_id_by_name(name):
+        response = requests.get(f'http://{base_uri}/api/v1/groups')
+        groups = response.json()
+        for group in groups:
+            if group['name'] == name:
+                return group['id']
+
+        return -1
+
 
 
     def test_1_existing_and_invalid(self):
@@ -274,7 +295,9 @@ class ApiTests(unittest.TestCase):
         response = requests.post(f'http://{base_uri}/api/v1/group/add-user?id={group_id}', headers=headers)
         self.assertEqual(response.status_code, 400) # missing _POST param
 
-        data = {'user_id': 3} # John Doe user_id
+        data = {'user_id': ApiTests.get_user_id_by_email('john.doe@gmail.com')}
+        self.assertNotEqual(-1, data['user_id'])
+
         response = requests.post(f'http://{base_uri}/api/v1/group/add-user?id={group_id}', headers=headers, data=data)
         self.assertEqual(response.status_code, 200) # should add John Doe to group `Python group`
 
@@ -288,7 +311,9 @@ class ApiTests(unittest.TestCase):
         self.assertNotEqual(None, token) # should get valid token from response
         headers = {'Authorization': token}
 
-        data = {'user_id': 5} # Janez Novak user_id
+        data = {'user_id': ApiTests.get_user_id_by_email('janez.novak@gmail.com')}
+        self.assertNotEqual(-1, data['user_id'])
+
         response = requests.post(f'http://{base_uri}/api/v1/group/add-user?id={group_id}', headers=headers, data=data)
         self.assertEqual(response.status_code, 200) # should add Janez Novak by John Doe
 
@@ -300,7 +325,10 @@ class ApiTests(unittest.TestCase):
         headers = {'Authorization': token}
 
         data = {'name': 'New Python Group Name'}
-        group_id = 5 # python generated group_id
+
+        group_id = ApiTests.get_group_id_by_name('Python group')
+        self.assertNotEqual(-1, group_id)
+
         response = requests.post(f'http://{base_uri}/api/v1/group?id={group_id}', headers=headers)
         self.assertEqual(response.status_code, 400) # no _POST data
 
@@ -310,14 +338,14 @@ class ApiTests(unittest.TestCase):
         response = requests.delete(f'http://{base_uri}/api/v1/group?id={group_id}', headers=headers)
         self.assertEqual(response.status_code, 401) # no permissions on group
 
-        response = requests.delete(f'http://{base_uri}/api/v1/group?id={group_id+500}', headers=headers)
+        response = requests.delete(f'http://{base_uri}/api/v1/group?id={uuid.uuid4()}', headers=headers)
         self.assertEqual(response.status_code, 404) # no group with that id
 
         token = ApiTests.get_token_from_login('john.doe@gmail.com', 'geslo123')
         self.assertNotEqual(None, token) # should get valid token from response
         headers = {'Authorization': token}
 
-        response = requests.post(f'http://{base_uri}/api/v1/group?id={group_id+500}', headers=headers, data=data)
+        response = requests.post(f'http://{base_uri}/api/v1/group?id={uuid.uuid4()}', headers=headers, data=data)
         self.assertEqual(response.status_code, 404) # no group with that id
 
         response = requests.post(f'http://{base_uri}/api/v1/group?id={group_id}', headers=headers, data=data)
@@ -349,7 +377,8 @@ class ApiTests(unittest.TestCase):
         self.assertEqual(response.status_code, 200) # old group should still exist
 
     def test_a3_potential_members(self):
-        group_id = 5 # python generated group_id
+        group_id = ApiTests.get_group_id_by_name('New Python Group Name')
+        self.assertNotEqual(-1, group_id)
 
         response = requests.get(f'http://{base_uri}/api/v1/group/potential-members?id={group_id}')
         self.assertEqual(response.status_code, 200)
@@ -361,7 +390,9 @@ class ApiTests(unittest.TestCase):
 
         self.assertEqual(len(actual_members.intersection(potential_members)), 0) # no users in group should be potential members
 
-        group_id = 4 # group with no members
+        group_id = ApiTests.get_group_id_by_name('John, Lorem pa Francka')
+        self.assertNotEqual(-1, group_id)
+
         response = requests.get(f'http://{base_uri}/api/v1/group/members?id={group_id}')
         self.assertEqual(response.status_code, 200)
         
