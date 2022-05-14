@@ -37,6 +37,15 @@ class UserModel {
         return true;
     }
 
+    private static function update_login($user_id) {
+        $db = DBInit::connect();
+
+        $stmt = $db->prepare("UPDATE `user` SET last_logged_in = NOW() WHERE id = :user_id;");
+        $stmt->execute(array('user_id' => $user_id));
+
+        return true;
+    }
+
     public static function login($email, $password) {
         $db = DBInit::connect();
 
@@ -48,6 +57,7 @@ class UserModel {
         if ($user = $stmt->fetch()) {
             $token = Service::uuid();
             AuthModel::create($user['id'], $token);
+            UserModel::update_login($user['id']);
             return $token;
         }
 
@@ -92,7 +102,7 @@ class UserModel {
         $db = DBInit::connect();
 
         $statement = $db->prepare("
-            SELECT g.id, g.name
+            SELECT g.id, g.name, g.created_at
             FROM `group` g
             INNER JOIN `group_user` gu ON gu.group_id = g.id
             WHERE gu.user_id = :user_id 
@@ -116,32 +126,10 @@ class UserModel {
     public static function get_all() {
         $db = DBInit::connect();
 
-        $statement = $db->prepare("SELECT id, fullname, email FROM user ORDER BY fullname");
+        $statement = $db->prepare("SELECT id, fullname, email, registered_at, last_logged_in FROM user ORDER BY fullname");
         $statement->execute();
 
         $users = $statement->fetchAll();
-        /*$ids = array();
-
-        foreach ($users as $user) {
-            $ids[$user['id']] = true;
-        }
-
-        $ids = array_keys($ids);
-        $joined_ids = implode(", ", $ids);
-        
-        $query = sprintf("
-            SELECT g.id, g.name 
-            FROM group_user gu
-            INNER JOIN `group` g ON g.id = gu.user_id
-            WHERE gu.user_id IN (%s)
-            ORDER BY g.name
-        ", $joined_ids);
-
-
-        $statement = $db->prepare($query);
-        $statement->execute();
-        $user_groups = $statement->fetchAll();
-        var_dump($user_groups);*/
         
         return $users;
     }

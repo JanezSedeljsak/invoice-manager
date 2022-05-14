@@ -16,10 +16,10 @@ class UserController {
         Response::ok($userInvoices);
     }
 
-    public static function groups() {
-        $user_id = $_REQUEST['user_id'];
-        $userInvoices = UserModel::get_groups($user_id);
-        Response::ok($userInvoices);
+    public static function groups($id) {
+        //$user_id = $_REQUEST['user_id'];
+        $user_groups = UserModel::get_groups($id);
+        Response::ok($user_groups);
     }
 
     public static function edit() {

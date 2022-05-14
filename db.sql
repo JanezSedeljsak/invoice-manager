@@ -17,7 +17,9 @@ CREATE TABLE `user` (
   `id` VARCHAR(36) PRIMARY KEY DEFAULT UUID(),
   `fullname` VARCHAR(255) NOT NULL,
   `email` VARCHAR(255) NOT NULL,
-  `password` VARCHAR(255) NOT NULL
+  `password` VARCHAR(255) NOT NULL,
+  `registered_at` DATETIME NOT NULL DEFAULT NOW(),
+  `last_logged_in` DATETIME NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE `store` (

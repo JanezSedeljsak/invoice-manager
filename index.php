@@ -24,7 +24,7 @@ $api_routes = array(
     "api/v1/users" => req(['GET'], fn() => UserController::all()), # ok
 
     "api/v1/user/invoices" => req_auth(['GET'], fn() => UserController::invoices()), # testing
-    "api/v1/user/groups" => req_auth(['GET'], fn() => UserController::groups()), # ok
+    "api/v1/user/groups" => req(['GET'], fn($id) => UserController::groups($id), true), # ok
     "api/v1/user/edit" => req_auth(['POST'], fn() => UserController::edit()), # ok
 
     "api/v1/groups" => req(['GET'], fn() => GroupController::all()), # ok

@@ -37,7 +37,7 @@ class GroupModel {
         $db = DBInit::connect();
 
         $statement = $db->prepare("
-            SELECT u.id, u.fullname, u.email, gu.added_by, gu.joined_at, u2.fullname added_by_fullname, u2.email added_by_email
+            SELECT u.id, u.fullname, u.email, u.registered_at, u.last_logged_in, gu.added_by, gu.joined_at, u2.fullname added_by_fullname, u2.email added_by_email
             FROM `user` u
             INNER JOIN `group_user` gu ON gu.user_id = u.id
             LEFT OUTER JOIN `user` u2 ON u2.id = gu.added_by 
@@ -98,7 +98,7 @@ class GroupModel {
         $db = DBInit::connect();
 
         $statement = $db->prepare("
-            SELECT id, fullname, email FROM `user` WHERE id NOT IN (
+            SELECT id, fullname, email, registered_at, last_logged_in FROM `user` WHERE id NOT IN (
                 SELECT user_id FROM `group_user` WHERE group_id = :id
             )
         ");

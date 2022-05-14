@@ -13,4 +13,13 @@ class StoreModel {
         return $statement->fetchAll();
     }
 
+    public static function get($id) {
+        $db = DBInit::connect();
+
+        $statement = $db->prepare("SELECT id, name FROM `store` WHERE id = :id");
+        $statement->execute(array("id" => $id));
+
+        return $statement->fetch();
+    }
+
 }
