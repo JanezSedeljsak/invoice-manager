@@ -141,14 +141,14 @@ class ApiTests(unittest.TestCase):
         response = requests.get(f'http://{base_uri}/api/v1/test', headers=headers) # doesn't need token
         self.assertEqual(response.status_code, 200)
 
-        response = requests.get(f'http://{base_uri}/api/v1/user/invoices', headers=headers) # should validate token
+        response = requests.get(f'http://{base_uri}/api/v1/profile/invoices', headers=headers) # should validate token
         self.assertEqual(response.status_code, 200)
 
-        response = requests.get(f'http://{base_uri}/api/v1/user/invoices', headers={}) # no headers
+        response = requests.get(f'http://{base_uri}/api/v1/profile/invoices', headers={}) # no headers
         self.assertEqual(response.status_code, 401)
 
         headers = {'Authorization': "invalid-token"}
-        response = requests.get(f'http://{base_uri}/api/v1/user/invoices', headers=headers) # no headers
+        response = requests.get(f'http://{base_uri}/api/v1/profile/invoices', headers=headers) # no headers
         self.assertEqual(response.status_code, 401)
 
     def test_7_auth_system_register(self):
@@ -173,49 +173,49 @@ class ApiTests(unittest.TestCase):
         response = requests.get(f'http://{base_uri}/api/v1/test', headers=headers) # doesn't need token
         self.assertEqual(response.status_code, 200)
 
-        response = requests.get(f'http://{base_uri}/api/v1/user/invoices', headers=headers) # should validate token
+        response = requests.get(f'http://{base_uri}/api/v1/profile/invoices', headers=headers) # should validate token
         self.assertEqual(response.status_code, 200)
 
-        response = requests.get(f'http://{base_uri}/api/v1/user/invoices', headers={}) # no headers
+        response = requests.get(f'http://{base_uri}/api/v1/profile/invoices', headers={}) # no headers
         self.assertEqual(response.status_code, 401)
 
         headers = {'Authorization': "invalid-token"}
-        response = requests.get(f'http://{base_uri}/api/v1/user/invoices', headers=headers) # no headers
+        response = requests.get(f'http://{base_uri}/api/v1/profile/invoices', headers=headers) # no headers
         self.assertEqual(response.status_code, 401)
 
     def test_8_user_update(self):
         """Test updating profile credentials"""
         # we assume `python_generated@gmail.com` is a valid user
 
-        response = requests.post(f'http://{base_uri}/api/v1/user/edit') # missing auth header (401)
+        response = requests.post(f'http://{base_uri}/api/v1/profile/edit') # missing auth header (401)
         self.assertEqual(response.status_code, 401)
 
-        response = requests.post(f'http://{base_uri}/api/v1/user/edit', data={}) # missing auth header (401)
+        response = requests.post(f'http://{base_uri}/api/v1/profile/edit', data={}) # missing auth header (401)
         self.assertEqual(response.status_code, 401)
 
         token = ApiTests.get_token_from_login('python_generated@gmail.com', 'geslo123')
         self.assertNotEqual(None, token) # should get valid token from response
         headers = {'Authorization': token}
 
-        response = requests.get(f'http://{base_uri}/api/v1/user/edit', headers=headers) # method not allowed
+        response = requests.get(f'http://{base_uri}/api/v1/profile/edit', headers=headers) # method not allowed
         self.assertEqual(response.status_code, 405)
 
-        response = requests.post(f'http://{base_uri}/api/v1/user/edit', headers=headers) # missing data (400)
+        response = requests.post(f'http://{base_uri}/api/v1/profile/edit', headers=headers) # missing data (400)
         self.assertEqual(response.status_code, 400)
         
         data = {'fullname': 'Random name', 'email': 'python_generated@gmail.com', 'password': 'geslo1234', 'old_password': 'invalid_old'}
-        response = requests.post(f'http://{base_uri}/api/v1/user/edit', data=data, headers=headers) # missing `old_email`
+        response = requests.post(f'http://{base_uri}/api/v1/profile/edit', data=data, headers=headers) # missing `old_email`
         self.assertEqual(response.status_code, 400)
 
         data = {
             'fullname': 'Random name', 'email': 'python_generated12@gmail.com', 
             'password': 'geslo1234', 'old_password': 'invalid_old', 'old_email': 'python_generated@gmail.com'
         }
-        response = requests.post(f'http://{base_uri}/api/v1/user/edit', data=data, headers=headers) # invalid old_password
+        response = requests.post(f'http://{base_uri}/api/v1/profile/edit', data=data, headers=headers) # invalid old_password
         self.assertEqual(response.status_code, 401)
 
         data['old_password'] = 'geslo123'
-        response = requests.post(f'http://{base_uri}/api/v1/user/edit', data=data, headers=headers) # should update profile
+        response = requests.post(f'http://{base_uri}/api/v1/profile/edit', data=data, headers=headers) # should update profile
         self.assertEqual(response.status_code, 200)
 
         data = {'email': 'python_generated@gmail.com', 'password': 'geslo123'}
@@ -246,7 +246,7 @@ class ApiTests(unittest.TestCase):
         response = requests.post(f'http://{base_uri}/api/v1/group/create', headers=headers, data=data)
         self.assertEqual(response.status_code, 200)
 
-        response = requests.get(f'http://{base_uri}/api/v1/user/groups', headers=headers)
+        response = requests.get(f'http://{base_uri}/api/v1/profile/groups', headers=headers)
         json_data = response.json()
         self.assertEqual(len(json_data), 1)  # should get only one group
         group_id = json_data[0]['id']
@@ -278,7 +278,7 @@ class ApiTests(unittest.TestCase):
         self.assertNotEqual(None, token) # should get valid token from response
         headers = {'Authorization': token}
 
-        response = requests.get(f'http://{base_uri}/api/v1/user/groups', headers=headers)
+        response = requests.get(f'http://{base_uri}/api/v1/profile/groups', headers=headers)
         json_data = response.json()
         self.assertEqual(len(json_data), 1)  # should get only one group
         group_id = json_data[0]['id']
@@ -361,7 +361,7 @@ class ApiTests(unittest.TestCase):
         response = requests.post(f'http://{base_uri}/api/v1/group/create', headers=headers, data=data)
         self.assertEqual(response.status_code, 200)
 
-        response = requests.get(f'http://{base_uri}/api/v1/user/groups', headers=headers)
+        response = requests.get(f'http://{base_uri}/api/v1/profile/groups', headers=headers)
         json_data = response.json()
         
         groups = [group['id'] for group in json_data if group['name'] == data['name']]
