@@ -12,6 +12,7 @@ require_once "api/controller/InvoiceController.php";
 require_once "api/controller/UserController.php";
 require_once "api/controller/GroupController.php";
 require_once "api/controller/StoreController.php";
+require_once "api/controller/ReportController.php";
 
 require_once "api/utils/Response.php";
 require_once "api/utils/Factory.php";
@@ -49,6 +50,8 @@ $api_routes = array(
     ), true),
 
     "api/v1/stores" => req(['GET'], fn() => StoreController::all()), # ok
+
+    "api/v1/analysis/invoice" => req(['GET'], fn() => ReportController::invoice()), # ok
 );
 
 $test_routes = array(
