@@ -30,12 +30,12 @@ class InvoiceController {
     }
 
     public static function insert() {
-        if (!Service::validate_keys(['image', 'user_id', 'group_id', 'store_id', 'amount', 'notes'], $_POST)) {
+        if (!Service::validate_keys(['image', 'group_id', 'store_id', 'amount', 'notes'], $_POST)) {
             Response::error400();
             return;
         }
 
-        $group = GroupModel::get($_POST['store_id']);
+        $group = StoreModel::get($_POST['store_id']);
         if (!$group) {
             Response::error404(); // no store
             return;
@@ -53,7 +53,7 @@ class InvoiceController {
             return;
         }
 
-        $ok = InvoiceModel::insert($_POST['image'], $_REQUEST['user_id'], $_POST['group_id'], $_REQUEST['store_id'], $_POST['amount'], $_REQUEST['notes']);
+        $ok = InvoiceModel::insert($_POST['image'], $_REQUEST['user_id'], $_POST['group_id'], $_POST['store_id'], $_POST['amount'], $_POST['notes']);
         if ($ok) {
             Response::ok(array("ok" => $ok));
         } else {

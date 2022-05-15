@@ -46,6 +46,15 @@ class ApiTests(unittest.TestCase):
 
         return -1
 
+    @staticmethod
+    def get_store_id_by_name(name):
+        response = requests.get(f'http://{base_uri}/api/v1/stores')
+        groups = response.json()
+        for group in groups:
+            if group['name'] == name:
+                return group['id']
+
+        return -1
 
 
     def test_1_existing_and_invalid(self):
@@ -411,6 +420,44 @@ class ApiTests(unittest.TestCase):
         self.assertEqual(len(potential_members), len(all_users))
         for potential_member in potential_members:
             self.assertIn(potential_member, all_users)
+
+    def test_a4_invocie_manipulation(self):
+        """Test creating invoices and checking ownership"""
+
+        token = ApiTests.get_token_from_login('john.doe@gmail.com', 'geslo123')
+        self.assertNotEqual(None, token) # should get valid token from response
+        headers = {'Authorization': token}
+
+        group_id = ApiTests.get_group_id_by_name('New Python Group Name')
+        self.assertNotEqual(-1, group_id)
+
+        store_id = ApiTests.get_store_id_by_name('Merkator')
+        self.assertNotEqual(-1, store_id)
+
+        data = {'image': '/', 'group_id': group_id}
+        response = requests.post(f'http://{base_uri}/api/v1/invoice/create', headers=headers, data=data)
+        self.assertEqual(response.status_code, 400) # missing _POST data
+
+        data = {'image': '/', 'group_id': group_id, 'store_id': group_id, 'amount': 53, 'notes': 'Testiranje vnosa'} 
+        response = requests.post(f'http://{base_uri}/api/v1/invoice/create', headers=headers, data=data) # 404 invalid store_id
+        self.assertEqual(response.status_code, 404)
+
+        data = {'image': '/', 'group_id': group_id, 'store_id': store_id, 'amount': 53, 'notes': 'Testiranje vnosa'}
+        response = requests.post(f'http://{base_uri}/api/v1/invoice/create', headers=headers, data=data)
+        self.assertEqual(response.status_code, 200)
+
+        store_id = ApiTests.get_store_id_by_name('Spar')
+        self.assertNotEqual(-1, store_id)
+
+        data = {'image': '/', 'group_id': group_id, 'store_id': store_id, 'amount': 13, 'notes': 'Testiranje vnosa #2'}
+        response = requests.post(f'http://{base_uri}/api/v1/invoice/create', headers=headers, data=data)
+        self.assertEqual(response.status_code, 200)
+
+        data = {'image': '/', 'group_id': group_id, 'store_id': store_id, 'amount': 109, 'notes': '/'}
+        response = requests.post(f'http://{base_uri}/api/v1/invoice/create', headers=headers, data=data)
+        self.assertEqual(response.status_code, 200)
+        
+
 
 
 

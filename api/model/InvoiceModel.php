@@ -30,7 +30,37 @@ class InvoiceModel {
         return $statement->fetch();
     }
 
-    public static function insert() {}
-    public static function edit($id) {}
-    public static function delete($id) {}
+    public static function insert($image, $user_id, $group_id, $store_id, $amount, $notes) {
+        $db = DBInit::connect();
+
+        $statement = $db->prepare("
+            INSERT INTO `invoice` (image, user_id, group_id, store_id, amount, notes) 
+            VALUES (:image, :user_id, :group_id, :store_id, :amount, :notes)");
+        $statement->execute(array("image" => $image, "user_id" => $user_id, "group_id" => $group_id, "store_id" => $store_id, "amount" => $amount, "notes" => $notes));
+        return true;
+    }
+
+    public static function edit($id, $image, $store_id, $amount, $notes) {
+        $db = DBInit::connect();
+
+        $stmt = $db->prepare("
+            UPDATE `group` 
+            SET 
+                image = :image,
+                store_id = :store_id,
+                amount = :amount,
+                notes = :notes
+
+            WHERE id = :id;");
+        $stmt->execute(array('image' => $image, 'store_id' => $store_id, 'amount' => $amount, 'notes' => $notes, 'id' => $id));
+        return true;
+    }
+
+    public static function delete($id) {
+        $db = DBInit::connect();
+
+        $statement = $db->prepare("DELETE FROM `invoice` WHERE id = :id");
+        $statement->execute(array("id" => $id));
+        return true;
+    }
 }
