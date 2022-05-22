@@ -14,12 +14,6 @@ class InvoiceController {
             return;
         }
 
-        $group = GroupModel::get($invoice['group_id']);
-        if (!$group) {
-            Response::error404(); // no group
-            return;
-        }
-
         $has_permissions = GroupModel::has_members_permissions($invoice['group_id'], $_REQUEST['user_id']);
         if (!$has_permissions) {
             Response::error401(); // no group permissions

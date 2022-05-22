@@ -4,6 +4,7 @@ require_once "api/model/DBInit.php";
 require_once "api/utils/Service.php";
 
 class AuthModel {
+    
     public static function create($user_id, $token) {
         $db = DBInit::connect();
 

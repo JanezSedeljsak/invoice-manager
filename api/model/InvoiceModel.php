@@ -44,7 +44,7 @@ class InvoiceModel {
         $db = DBInit::connect();
 
         $stmt = $db->prepare("
-            UPDATE `group` 
+            UPDATE `invoice` 
             SET 
                 image = :image,
                 store_id = :store_id,

@@ -27,7 +27,12 @@ class GroupModel {
     public static function get_invoices($group_id) {
         $db = DBInit::connect();
 
-        $statement = $db->prepare("SELECT id, fullname, email FROM invoices WHERE group_id = :group_id");
+        $statement = $db->prepare("
+            SELECT i.id, u.fullname, u.email, i.amount, i.date, i.notes, i.image, s.name AS store_name
+            FROM invoice i
+            INNER JOIN user u ON u.id = i.user_id
+            INNER JOIN store s ON s.id = i.store_id
+            WHERE group_id = :group_id");
         $statement->execute(array("group_id" => $group_id));
 
         return $statement->fetchAll();
@@ -43,6 +48,22 @@ class GroupModel {
             LEFT OUTER JOIN `user` u2 ON u2.id = gu.added_by 
             WHERE gu.group_id = :group_id 
             ORDER BY u.fullname
+        ");
+        $statement->execute(array('group_id' => $group_id));
+
+        return $statement->fetchAll();  
+    }
+
+    public static function get_shopping_items($group_id) {
+        $db = DBInit::connect();
+
+        $statement = $db->prepare("
+            SELECT i.id, u.id AS user_id, u.fullname, u.email, g.name, i.name, i.created_at
+            FROM `group` g
+            INNER JOIN shopping_item i ON i.group_id = g.id
+            INNER JOIN `user` u ON u.id = i.added_by
+            WHERE g.id = :group_id 
+            ORDER BY i.name
         ");
         $statement->execute(array('group_id' => $group_id));
 

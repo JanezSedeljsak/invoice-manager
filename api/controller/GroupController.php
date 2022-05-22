@@ -53,6 +53,23 @@ class GroupController {
         Response::ok($group_invoices);
     }
 
+    public static function shopping_items($id) {
+        $group = GroupModel::get($id);
+        if (!$group) {
+            Response::error404(); // record not found
+            return;
+        }
+
+        $has_permissions = GroupModel::has_members_permissions($id, $_REQUEST['user_id']);
+        if (!$has_permissions) {
+            Response::error401();
+            return;
+        }
+
+        $items = GroupModel::get_shopping_items($id);
+        Response::ok($items);
+    }
+
     public static function members($id) {
         $group_members = GroupModel::get_members($id);
         Response::ok($group_members);

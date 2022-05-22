@@ -421,7 +421,7 @@ class ApiTests(unittest.TestCase):
         for potential_member in potential_members:
             self.assertIn(potential_member, all_users)
 
-    def test_a4_invocie_manipulation(self):
+    def test_a4_invocie_create(self):
         """Test creating invoices and checking ownership"""
 
         token = ApiTests.get_token_from_login('john.doe@gmail.com', 'geslo123')
@@ -456,10 +456,247 @@ class ApiTests(unittest.TestCase):
         data = {'image': '/', 'group_id': group_id, 'store_id': store_id, 'amount': 109, 'notes': '/'}
         response = requests.post(f'http://{base_uri}/api/v1/invoice/create', headers=headers, data=data)
         self.assertEqual(response.status_code, 200)
+
+        token = ApiTests.get_token_from_login('python_generated12@gmail.com', 'geslo1234')
+        self.assertNotEqual(None, token) # should get valid token from response
+        headers = {'Authorization': token}
+
+        data = {'image': '/', 'group_id': group_id, 'store_id': store_id, 'amount': 20, 'notes': 'Prvic random'}
+        response = requests.post(f'http://{base_uri}/api/v1/invoice/create', headers=headers, data=data)
+        self.assertEqual(response.status_code, 200)
+
+        data = {'image': '/', 'group_id': group_id, 'store_id': store_id, 'amount': 50, 'notes': 'Drugic random'}
+        response = requests.post(f'http://{base_uri}/api/v1/invoice/create', headers=headers, data=data)
+        self.assertEqual(response.status_code, 200)
+
+        data = {'image': '/', 'group_id': group_id, 'store_id': store_id, 'amount': 25, 'notes': 'Tretjic random'}
+        response = requests.post(f'http://{base_uri}/api/v1/invoice/create', headers=headers, data=data)
+        self.assertEqual(response.status_code, 200)
         
+    def test_a5_invoice_manipulation(self):
+        """Test editing and deleting invoices"""
+
+        token = ApiTests.get_token_from_login('python_generated12@gmail.com', 'geslo1234')
+        self.assertNotEqual(None, token) # should get valid token from response
+        headers = {'Authorization': token}
+
+        response = requests.get(f'http://{base_uri}/api/v1/profile/invoices', headers=headers)
+        self.assertEqual(response.status_code, 200)
+
+        # should have notes 'Prvic random' 
+        invoices = response.json()
+        self.assertEqual(invoices[0]['notes'], 'Prvic random')
+
+        invoice_id = invoices[0]['id']
+        response = requests.get(f'http://{base_uri}/api/v1/invoice?id={invoice_id}', headers=headers)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['id'], invoice_id)
+
+        # get invalid user token to validate permissions
+        invalid_user_token = ApiTests.get_token_from_login('janez.sedeljsak@gmail.com', 'geslo123')
+        self.assertNotEqual(None, invalid_user_token) # should get valid token from response
+
+        response = requests.get(f'http://{base_uri}/api/v1/invoice?id={invoice_id}', headers={'Authorization': invalid_user_token})
+        self.assertEqual(response.status_code, 401)
+
+        store_id = ApiTests.get_store_id_by_name('Merkator')
+        data = {'image': '/', 'store_id': store_id, 'amount': 500, 'notes': 'invoice update test'}
+        response = requests.post(
+            f'http://{base_uri}/api/v1/invoice?id={invoice_id}', 
+            headers={'Authorization': invalid_user_token},
+            data=data
+        )
+        self.assertEqual(response.status_code, 401)
+
+        invalid_data = {'image': '/', 'store_id____': '', 'amount': 500, 'notes': 'invalid store id'}
+        response = requests.post(f'http://{base_uri}/api/v1/invoice?id={invoice_id}', headers=headers, data=invalid_data)
+        self.assertEqual(response.status_code, 400)
+
+        response = requests.post(f'http://{base_uri}/api/v1/invoice?id={invoice_id}', headers=headers, data=data)
+        self.assertEqual(response.status_code, 200)
+
+        response = requests.get(f'http://{base_uri}/api/v1/invoice?id={invoice_id}', headers=headers)
+        self.assertEqual(response.status_code, 200)
+        json_data = response.json()
+        self.assertEqual(json_data['id'], invoice_id)
+        self.assertEqual(json_data['store_id'], data['store_id'])
+        self.assertEqual(json_data['notes'], data['notes'])
+        self.assertEqual(json_data['amount'], data['amount'])
+
+        """ Test deleting """
+        
+        # get second invoice of 'random name'
+        invoice_id = invoices[1]['id']
+        response = requests.get(f'http://{base_uri}/api/v1/invoice?id={invoice_id}', headers=headers)
+        self.assertEqual(response.status_code, 200)
+
+        json_data = response.json()
+        self.assertEqual(json_data['id'], invoice_id)
+        self.assertEqual(json_data['notes'], 'Drugic random')
+
+        response = requests.delete(f'http://{base_uri}/api/v1/invoice?id={invoice_id}', headers=headers)
+        self.assertEqual(response.status_code, 200)
+
+        # deleted invoice should not exist anymore
+        response = requests.delete(f'http://{base_uri}/api/v1/invoice?id={invoice_id}', headers=headers)
+        self.assertEqual(response.status_code, 404)
+
+        invoice_id = invoices[0]['id']
+        response = requests.delete(f'http://{base_uri}/api/v1/invoice?id={invoice_id}', headers={'Authorization': invalid_user_token})
+        self.assertEqual(response.status_code, 401)
+
+        # invoice should stil exist (user deleting should not have gotten permissions)
+        response = requests.get(f'http://{base_uri}/api/v1/invoice?id={invoice_id}', headers=headers)
+        self.assertEqual(response.status_code, 200)
+
+        json_data = response.json()
+        self.assertEqual(json_data['id'], invoice_id)
+        self.assertEqual(json_data['notes'], data['notes'])
 
 
+    def test_a6_group_and_user_invoices(self):
+        """Test getting group invoices"""
 
+        token = ApiTests.get_token_from_login('john.doe@gmail.com', 'geslo123')
+        self.assertNotEqual(None, token) # should get valid token from response
+        headers = {'Authorization': token}
+
+        group_id = ApiTests.get_group_id_by_name('New Python Group Name')
+        self.assertNotEqual(-1, group_id)
+
+        response = requests.get(f'http://{base_uri}/api/v1/profile/invoices', headers=headers)
+        self.assertEqual(response.status_code, 200)
+        invoices = response.json()
+
+        # john should have 3 invoices
+        self.assertEqual(len(invoices), 3)
+
+        # all of these invoices are in the 'New Python Group Name'
+        for invoice in invoices:
+            self.assertEqual(invoice['group_id'], group_id)
+
+        token = ApiTests.get_token_from_login('python_generated12@gmail.com', 'geslo1234')
+        self.assertNotEqual(None, token) # should get valid token from response
+        headers = {'Authorization': token}
+
+        response = requests.get(f'http://{base_uri}/api/v1/profile/invoices', headers=headers)
+        self.assertEqual(response.status_code, 200)
+        invoices = response.json()
+
+        # 'Random name' should have 2 invoices
+        self.assertEqual(len(invoices), 2)
+
+        # all of these invoices are in the 'New Python Group Name'
+        for invoice in invoices:
+            self.assertEqual(invoice['group_id'], group_id)
+        
+        response = requests.get(f'http://{base_uri}/api/v1/group/invoices', headers=headers)
+        self.assertEqual(response.status_code, 400) # no group id
+
+        response = requests.get(f'http://{base_uri}/api/v1/group/invoices?id={group_id}', headers=headers)
+        self.assertEqual(response.status_code, 200)
+        invoices = response.json()
+
+        # group should have 5 invoices
+        self.assertEqual(len(invoices), 5)
+
+        data = {'name': 'Faculty expenses'}
+        response = requests.post(f'http://{base_uri}/api/v1/group/create', headers=headers, data=data)
+        self.assertEqual(response.status_code, 200)
+
+        group_id = ApiTests.get_group_id_by_name('Faculty expenses')
+        self.assertNotEqual(-1, group_id)
+
+        response = requests.get(f'http://{base_uri}/api/v1/group/invoices?id={group_id}', headers=headers)
+        self.assertEqual(response.status_code, 200)
+        invoices = response.json()
+
+        # group should have 0 invoices
+        self.assertEqual(len(invoices), 0)
+
+    def test_a7_shopping_item_create(self):
+        """Test creating shopping items and checking ownership"""
+
+        token = ApiTests.get_token_from_login('john.doe@gmail.com', 'geslo123')
+        self.assertNotEqual(None, token) # should get valid token from response
+        headers = {'Authorization': token}
+
+        group_id = ApiTests.get_group_id_by_name('New Python Group Name')
+        self.assertNotEqual(-1, group_id)
+
+        data = {'name': 'Milk', 'group_id': group_id}
+        response = requests.post(f'http://{base_uri}/api/v1/shopping-item/create', headers=headers, data=data)
+        self.assertEqual(response.status_code, 200)
+
+        data = {'name': 'Bread', 'group_id': group_id}
+        response = requests.post(f'http://{base_uri}/api/v1/shopping-item/create', headers=headers, data=data)
+        self.assertEqual(response.status_code, 200)
+
+        data = {'name': 'Coffee', 'group_id': group_id}
+        response = requests.post(f'http://{base_uri}/api/v1/shopping-item/create', headers=headers, data=data)
+        self.assertEqual(response.status_code, 200)
+
+        invalid_user_token = ApiTests.get_token_from_login('janez.sedeljsak@gmail.com', 'geslo123')
+        self.assertNotEqual(None, invalid_user_token) # should get valid token from response
+
+        data = {'name': 'Invalid item', 'group_id': group_id}
+        response = requests.post(f'http://{base_uri}/api/v1/shopping-item/create', 
+                                headers={'Authorization': invalid_user_token}, data=data)
+
+        self.assertEqual(response.status_code, 401)
+
+        token = ApiTests.get_token_from_login('python_generated12@gmail.com', 'geslo1234')
+        self.assertNotEqual(None, token) # should get valid token from response
+        headers = {'Authorization': token}
+
+        data = {'group_id': group_id}
+        response = requests.post(f'http://{base_uri}/api/v1/shopping-item/create', headers=headers, data=data)
+        self.assertEqual(response.status_code, 400) # missing name
+
+        data = {'name': 'Coffee', 'group_id': 'fake-uuid'}
+        response = requests.post(f'http://{base_uri}/api/v1/shopping-item/create', headers=headers, data=data)
+        self.assertEqual(response.status_code, 404) # group not found
+
+        data = {'name': 'Soup', 'group_id': group_id}
+        response = requests.post(f'http://{base_uri}/api/v1/shopping-item/create', headers=headers, data=data)
+        self.assertEqual(response.status_code, 200)
+
+    def test_a8_shopping_item_manipulation(self):
+        """Test getting and deleting shopping items"""
+
+        token = ApiTests.get_token_from_login('john.doe@gmail.com', 'geslo123')
+        self.assertNotEqual(None, token) # should get valid token from response
+        headers = {'Authorization': token}
+
+        group_id = ApiTests.get_group_id_by_name('New Python Group Name')
+        self.assertNotEqual(-1, group_id)
+
+        response = requests.get(f'http://{base_uri}/api/v1/group/shopping-items?id={group_id}', headers=headers)
+        self.assertEqual(response.status_code, 200)
+        items = response.json()
+        
+        self.assertEqual(len(items), 4)
+
+        first_item = items[0]
+        response = requests.get(f'http://{base_uri}/api/v1/shopping-item?id={first_item["id"]}', headers=headers)
+        self.assertEqual(response.status_code, 200)
+        item = response.json()
+
+        self.assertEqual(item['id'], first_item["id"])
+        self.assertEqual(item['name'], first_item["name"])
+
+        response = requests.delete(f'http://{base_uri}/api/v1/shopping-item?id={first_item["id"]}', headers=headers)
+        self.assertEqual(response.status_code, 200)
+        item = response.json()
+
+        response = requests.get(f'http://{base_uri}/api/v1/group/shopping-items?id={group_id}', headers=headers)
+        self.assertEqual(response.status_code, 200)
+        items = response.json()
+        
+        self.assertEqual(len(items), 3)
+
+        response = requests.get(f'http://{base_uri}/api/v1/shopping-item?id={first_item["id"]}', headers=headers)
+        self.assertEqual(response.status_code, 404)
 
 
 

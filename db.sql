@@ -59,10 +59,12 @@ CREATE TABLE `group_user` (
   `added_by` VARCHAR(36) NOT NULL REFERENCES `user`(`id`) ON DELETE CASCADE
 );
 
-CREATE TABLE `group_shopping_item` (
+CREATE TABLE `shopping_item` (
   `id` VARCHAR(36) PRIMARY KEY DEFAULT UUID(),
+  `name` VARCHAR(255) NOT NULL,
+  `created_at` DATETIME NOT NULL DEFAULT NOW(),
   `group_id` VARCHAR(36) NOT NULL REFERENCES `group`(`id`) ON DELETE CASCADE,
-  `name` VARCHAR(255) NOT NULL
+  `added_by` VARCHAR(36) NOT NULL REFERENCES `user`(`id`) ON DELETE CASCADE
 );
 
 INSERT INTO `store` (name) VALUES

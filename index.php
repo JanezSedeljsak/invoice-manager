@@ -13,6 +13,7 @@ require_once "api/controller/UserController.php";
 require_once "api/controller/GroupController.php";
 require_once "api/controller/StoreController.php";
 require_once "api/controller/ReportController.php";
+require_once "api/controller/ShoppingItemController.php";
 
 require_once "api/utils/Response.php";
 require_once "api/utils/Factory.php";
@@ -26,15 +27,19 @@ $api_routes = array(
 
     "api/v1/profile/groups" => req_auth(['GET'], fn() => UserController::groups($_REQUEST['user_id'])), # ok
     "api/v1/profile/edit" => req_auth(['POST'], fn() => UserController::edit()), # ok
-    "api/v1/profile/invoices" => req_auth(['GET'], fn() => UserController::invoices()), # testing
+    "api/v1/profile/invoices" => req_auth(['GET'], fn() => UserController::invoices()), # ok
 
     "api/v1/user/groups" => req(['GET'], fn($id) => UserController::groups($id), true), # ok
     
     "api/v1/groups" => req(['GET'], fn() => GroupController::all()), # ok
+
     "api/v1/group/add-user" => req_auth(['POST'], fn($id) => GroupController::add_user($id), true), # ok
+
     "api/v1/group/members" => req(['GET'], fn($id) => GroupController::members($id), true), # ok
     "api/v1/group/potential-members" => req(['GET'], fn($id) => GroupController::potential_members($id), true), # ok
-    "api/v1/group/invoices" => req_auth(['GET'], fn($id) => GroupController::invoices($id), true), # TODO
+    "api/v1/group/invoices" => req_auth(['GET'], fn($id) => GroupController::invoices($id), true), # ok
+    "api/v1/group/shopping-items" => req_auth(['GET'], fn($id) => GroupController::shopping_items($id), true), # ok
+
     "api/v1/group/create" => req_auth(['POST'], fn() => GroupController::insert()), # ok
     "api/v1/group" => req_auth_select(array(
         "GET" => fn($id) => GroupController::get($id), # ok
@@ -42,16 +47,24 @@ $api_routes = array(
         "DELETE" => fn($id) => GroupController::delete($id) # ok
     ), true),
 
-    "api/v1/invoice/create" => req_auth(['POST'], fn() => InvoiceController::insert()), # TODO
-    "api/v1/invoice" => req_auth_select(array( # TODO
+    "api/v1/invoice/create" => req_auth(['POST'], fn() => InvoiceController::insert()), # ok
+    "api/v1/invoice" => req_auth_select(array( # ok
         "GET" => fn($id) => InvoiceController::get($id),
         "POST" => fn($id) => InvoiceController::edit($id),
         "DELETE" => fn($id) => InvoiceController::delete($id)
     ), true),
 
+    "api/v1/shopping-item/create" => req_auth(['POST'], fn() => ShoppingItemController::insert()), # TODO
+    "api/v1/shopping-item" => req_auth_select(array( # TODO
+        "GET" => fn($id) => ShoppingItemController::get($id),
+        "DELETE" => fn($id) => ShoppingItemController::delete($id)
+    ), true),
+
     "api/v1/stores" => req(['GET'], fn() => StoreController::all()), # ok
 
-    "api/v1/analysis/invoice" => req(['GET'], fn() => ReportController::invoice()), # ok
+    "api/v1/analysis/group/summary" => req_auth(['GET'], fn($id) => ReportController::group_summary($id), true), # todo
+    "api/v1/analysis/invoice" => req_auth(['GET'], fn($id) => ReportController::invoice($id), true), # todo
+    "api/v1/analysis/profile/invoices" => req_auth(['GET'], fn() => ReportController::user_invoices()), # ok
 );
 
 $test_routes = array(
