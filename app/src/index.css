@@ -1,8 +1,10 @@
-/** {
+/*{
   outline: 1px solid red;
 }*/
 
 .nav-container {
+  position: sticky;
+  top: 0;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -10,6 +12,11 @@
   background-color: #00cba9 !important;
   margin-bottom: 10px;
   padding: 5px;
+  z-index: 100;
+}
+
+button.primary {
+  background-color: #00cba9 !important;
 }
 
 .nav-container > nav {
@@ -44,3 +51,17 @@ nav * {
   transform: scaleY(2);
 }
 
+#home-container .home-content, #home-container .cards {
+  margin-top: 30vh;
+  justify-content: center;
+}
+
+#home-container .card {
+  transform: scale(1);
+}
+
+#home-container .home-footer {
+  margin-top: 15px;
+  border: 1px solid black;
+  width: 100%;
+}
