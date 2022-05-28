@@ -33,36 +33,42 @@ function Profile() {
     }
 
     return (
-        <form className={"ui form"} onSubmit={callProfileUpdate}>
-            <h2>New credentials</h2>
-            <div className={"field"}>
-                <label>Fullname</label>
-                <input type="text" name="fullname" ref={nameRef} defaultValue={user.fullname} placeholder="Fullname" required />
-            </div>
-            <div className={"field"}>
-                <label>Email</label>
-                <input type="email" name="email" ref={emailRef} defaultValue={user.email} placeholder="Email" required />
-            </div>
-            <div className={"field"}>
-                <label>Password</label>
-                <input type="password" name="password" ref={passwdRef} placeholder="Password" required />
-            </div>
-            <div className={"field"}>
-                <label>Profile image</label>
-                <input type="file" name="image" />
-            </div>
-            <hr />
-            <h2>Old credentials</h2>
-            <div className={"field"}>
-                <label>Email</label>
-                <input type="email" ref={old_emailRef} defaultValue={user.email} name="old_email" placeholder="Old email" required />
-            </div>
-            <div className={"field"}>
-                <label>Password</label>
-                <input type="password" ref={old_passwdRef} name="old_password" placeholder="Old password" required />
-            </div>
-            <button className={"ui primary button"} type="submit">Update profile</button>
-        </form>
+        <>
+            <form className={"ui form"} onSubmit={callProfileUpdate}>
+                <div class="ui raised segment">
+                    <a class="ui teal ribbon label">New credentials</a><br /><br />
+                    <div className={"field"}>
+                        <label>Fullname</label>
+                        <input type="text" name="fullname" ref={nameRef} defaultValue={user.fullname} placeholder="Fullname" required />
+                    </div>
+                    <div className={"field"}>
+                        <label>Email</label>
+                        <input type="email" name="email" ref={emailRef} defaultValue={user.email} placeholder="Email" required />
+                    </div>
+                    <div className={"field"}>
+                        <label>Password</label>
+                        <input type="password" name="password" ref={passwdRef} placeholder="Password" required />
+                    </div>
+                    <div className={"field"}>
+                        <label>Profile image</label>
+                        <input type="file" name="image" />
+                    </div>
+                </div>
+                <div class="ui raised segment">
+                    <a class="ui teal ribbon label">Old credentials</a><br /><br />
+                    <div className={"field"}>
+                        <label>Email</label>
+                        <input type="email" ref={old_emailRef} defaultValue={user.email} name="old_email" placeholder="Old email" required />
+                    </div>
+                    <div className={"field"}>
+                        <label>Password</label>
+                        <input type="password" ref={old_passwdRef} name="old_password" placeholder="Old password" required />
+                    </div>
+                </div>
+                <button className={"ui primary button"} type="submit">Update profile</button>
+            </form>
+        </>
+
     );
 }
 

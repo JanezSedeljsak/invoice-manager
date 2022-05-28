@@ -16,9 +16,8 @@ function Navigation() {
     return (
         <nav className="ui secondary menu">
             <Link className={"ui item"} to="/">Home</Link>
-            <Link className={"ui item"} to="/users">Users</Link>
-            <Link className={"ui item"} to="/groups">Groups</Link>
-            <Link className={"ui item"} to="/my-groups">My groups</Link>
+            <Link className={"ui item"} to="/profile-invoices">Invoices</Link>
+            <Link className={"ui item"} to="/profile-groups">Groups</Link>
 
             <div className={"right menu"}>
                 <Link className={"ui item"} to="/profile">Profile</Link>

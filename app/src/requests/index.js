@@ -44,6 +44,28 @@ class Requests {
         return [response.status, json];
     }
 
+    static async profileGroups(token) {
+        const response = await fetch(`${API_URI}/api/v1/profile/groups`, {
+            method: 'GET',
+            headers: {'Authorization': token }
+        });
+
+        if (response.status !== 200) return [response.status, null];
+        const json = await response.json();
+        return [response.status, json];
+    }
+
+    static async profileInvoices(token) {
+        const response = await fetch(`${API_URI}/api/v1/profile/invoices`, {
+            method: 'GET',
+            headers: {'Authorization': token }
+        });
+
+        if (response.status !== 200) return [response.status, null];
+        const json = await response.json();
+        return [response.status, json];
+    }
+
     static async users() {
         const response = await fetch(`${API_URI}/api/v1/users`);
         const json = await response.json();

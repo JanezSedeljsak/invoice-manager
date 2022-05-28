@@ -5,29 +5,41 @@ import Moment from 'react-moment';
 
 function Users() {
     const [users, setUsers] = useState([]);
+    const [filteredUsers, setFilteredUsers] = useState([]);
+
     useEffect(() => {
         getData();
     }, []);
 
     async function getData() {
-        setUsers(await Requests.users());
+        const usersResponse = await Requests.users() 
+        setUsers(usersResponse);
+        setFilteredUsers(usersResponse);
+    }
+
+    async function showUserData(userId) {
+        alert('showing user data....');
+    }
+
+    function filterUsers(keyword) {
+        const newUsers = users.filter(user => user.fullname.toLowerCase().includes(keyword.toLowerCase()));
+        setFilteredUsers(newUsers);
     }
 
     return (
         <>
             <div className="ui search">
                 <div className="ui icon input">
-                    <input className="prompt" type="text" placeholder="Search users..." />
+                    <input className="prompt" type="text" onKeyUp={event => filterUsers(event.target.value)} placeholder="Search users..." />
                     <i className="search icon"></i>
                 </div>
-                <div className="results"></div>
             </div>
             <div className="ui relaxed divided list">
-                {users.map(user => (
-                    <div className="item" key={`group_${user.id}`}>
+                {filteredUsers.map(user => (
+                    <div className="item" key={`user_${user.id}`}>
                         <i className="large github middle aligned icon"></i>
                         <div className="content">
-                            <a className="header">{user.fullname}</a>
+                            <a className="header" onClick={() => showUserData(user.id)}>{user.fullname}</a>
                             <div className="description">
                                 {user.email}
                             </div>

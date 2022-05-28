@@ -86,8 +86,9 @@ class UserModel {
         $db = DBInit::connect();
 
         $statement = $db->prepare("
-            SELECT i.id, i.image, i.date, i.amount, i.notes, i.group_id, g.name
+            SELECT i.id, i.image, i.date, i.amount, i.notes, i.group_id, g.name AS group_name, s.name AS store
             FROM invoice i
+            INNER JOIN store s ON i.store_id = s.id
             INNER JOIN `group` g ON i.group_id = g.id
             WHERE i.user_id = :user_id 
             ORDER BY i.date
