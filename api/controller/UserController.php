@@ -30,7 +30,7 @@ class UserController {
             return;
         }
 
-        var_dump($user_id);
+        // var_dump($user_id);
         if (!UserModel::validate_credentials($user_id, $_POST['old_email'], $_POST['old_password'])) {
             Response::error401(); // invalid password
             return;
@@ -42,7 +42,6 @@ class UserController {
         } else {
             Respoonse::error400();
         }
-       
     }
 
     public static function login() {
@@ -53,7 +52,8 @@ class UserController {
 
         $token = UserModel::login($_POST["email"], $_POST["password"]);
         if ($token !== false) {
-            Response::ok(array("token" => $token));
+            $user = UserModel::get_user_by_email($_POST["email"]);
+            Response::ok(array("token" => $token, "user" => $user));
         } else {
             Response::error401();
         }
@@ -69,7 +69,8 @@ class UserController {
         if ($ok) {
             $token = UserModel::login($_POST['email'], $_POST['password']);
             if ($token !== false) {
-                Response::ok(array("token" => $token));
+                $user = UserModel::get_user_by_email($_POST["email"]);
+                Response::ok(array("token" => $token, "user" => $user));
                 return;
             } else {
                 Response::error400(); // internal error (this should never happen)

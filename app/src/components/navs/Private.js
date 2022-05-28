@@ -1,6 +1,18 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useStore } from'../../store';
+import { useToasts } from 'react-toast-notifications';
 
 function Navigation() {
+    const logoutAction = useStore(state => state.logout);
+    const navigate = useNavigate();
+    const { addToast } = useToasts();
+
+    function callLogout() {
+        logoutAction();
+        addToast('Logout success!', { appearance: 'success', autoDismiss: true, placement: 'bottom-left' });
+        navigate('/');
+    }
+
     return (
         <nav className="ui secondary menu">
             <Link className={"ui item"} to="/">Home</Link>
@@ -10,7 +22,7 @@ function Navigation() {
 
             <div className={"right menu"}>
                 <Link className={"ui item"} to="/profile">Profile</Link>
-                <Link className={"ui item"} to="/logout">Logout</Link>
+                <a className={"ui item"} onClick={callLogout}>Logout</a>
             </div>
         </nav>
     );   

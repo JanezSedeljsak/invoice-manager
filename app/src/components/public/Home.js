@@ -2,26 +2,27 @@ import Requests from '../../requests';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Waves from '../blocks/Waves';
+import { useStore } from '../../store';
 
 function Home() {
+    const isAuth = useStore(state => state.token !== null);
+    const user = useStore(state => state.user);
+
     return (
         <div id="home-container">
             <Waves />
-            <div className="home-content">
-                <div className="ui cards">
-                    <div className="card">
-                        <div className="content">
-                            <div className="header">Elliot Fu</div>
-                            <div className="meta">Friend</div>
-                            <div className="description">
-                                Elliot Fu is a film-maker from New York.
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className='home-footer'>
-                    <p>hello</p>
-                </div>
+            <div className="screen-center">
+                <h1 className="ui header">
+                    {isAuth ?
+                        <>
+                            {"Hello "}
+                            <span className='p-color'>{user?.fullname ?? '/'}</span>
+                        </> :
+                        'Welcome to our website...'}
+                </h1>
+                <p>
+                    Spending money amongst your friends has never been easier!
+                </p>
             </div>
         </div>
 

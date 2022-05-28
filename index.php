@@ -3,11 +3,6 @@
 define("BASE_URL", $_SERVER["SCRIPT_NAME"] . "/");
 define("IMAGES_URL", rtrim($_SERVER["SCRIPT_NAME"], "index.php") . "storage/images/");
 
-// Allow cors
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
-header("Access-Control-Allow-Headers: X-Requested-With");
-
 require_once "api/controller/InvoiceController.php";
 require_once "api/controller/UserController.php";
 require_once "api/controller/GroupController.php";
@@ -19,6 +14,15 @@ require_once "api/utils/Response.php";
 require_once "api/utils/Factory.php";
 
 $path = isset($_GET['path']) ? $_GET['path'] : '/';
+
+// Allow Cors
+header("Access-Control-Allow-Origin: http://localhost:3000");
+header("Access-Control-Allow-Methods: GET,POST,PUT,OPTIONS");
+header("Access-Control-Allow-Headers:*");
+
+if($_SERVER['REQUEST_METHOD'] == 'OPTIONS'){
+    exit;
+}
 
 $api_routes = array(
     "api/v1/login" => req(['POST'], fn() => UserController::login()), # ok
@@ -62,9 +66,9 @@ $api_routes = array(
 
     "api/v1/stores" => req(['GET'], fn() => StoreController::all()), # ok
 
-    "api/v1/analysis/group/summary" => req_auth(['GET'], fn($id) => ReportController::group_summary($id), true), # todo
-    "api/v1/analysis/invoice" => req_auth(['GET'], fn($id) => ReportController::invoice($id), true), # todo
-    "api/v1/analysis/profile/invoices" => req_auth(['GET'], fn() => ReportController::user_invoices()), # ok
+    "api/v1/analysis/group/summary" => req(['GET'], fn($id) => ReportController::group_summary($id), true), # todo
+    "api/v1/analysis/invoice" => req(['GET'], fn($id) => ReportController::invoice($id), true), # todo
+    "api/v1/analysis/profile/invoices" => req(['GET'], fn() => ReportController::user_invoices()), # ok
 );
 
 $test_routes = array(

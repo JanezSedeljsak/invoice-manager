@@ -97,6 +97,18 @@ class UserModel {
         return $statement->fetchAll();  
     }
 
+    public static function get_user_by_email($email) {
+        $db = DBInit::connect();
+
+        $statement = $db->prepare("
+            SELECT email, fullname, registered_at FROM user
+            WHERE email = :email;
+        ");
+        $statement->execute(array('email' => $email));
+
+        return $statement->fetch();  
+    }
+
     public static function get_groups($user_id) {
         $db = DBInit::connect();
 

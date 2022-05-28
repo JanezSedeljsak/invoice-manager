@@ -1,4 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { ToastProvider } from 'react-toast-notifications';
+import React from 'react';
 
 import Login from './components/public/Login';
 import Register from './components/public/Register';
@@ -17,14 +19,18 @@ import NavigationPublic from './components/navs/Public';
 
 import NotFound from './components/NotFound';
 
-export default function () {
+import { useStore } from './store';
+
+function App() {
+  const isAuth = useStore((state) => state.token !== null);
+
   return (
     <>
       <BrowserRouter>
         <div className='nav-container'>
-          <NavigationPrivate />
+          {isAuth ? <NavigationPrivate /> : <NavigationPublic />}
         </div>
-        
+
         <div className='content-container'>
           <Routes>
 
@@ -46,6 +52,12 @@ export default function () {
     </>
   );
 }
+
+export default () => (
+  <ToastProvider>
+    <App />
+  </ToastProvider>
+);
 
 
 

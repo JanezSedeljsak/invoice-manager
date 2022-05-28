@@ -1,19 +1,47 @@
-import { Link } from 'react-router-dom';
-
+import { useNavigate } from 'react-router-dom';
+import { useRef } from 'react';
+import Waves from '../blocks/Waves';
+import { useStore } from'../../store';
+import { useToasts } from 'react-toast-notifications';
 
 function Login() {
+    const loginAction = useStore(state => state.login);
+    const navigate = useNavigate();
+    const { addToast } = useToasts();
+
+    const emailRef = useRef(null);
+    const passwdRef = useRef(null);
+
+    async function callLogin(event) {
+        event.preventDefault();
+        const email = emailRef.current.value;
+        const password = passwdRef.current.value;
+        const isOk = await loginAction(email, password);
+        if (isOk) {
+            addToast('Login success!', { appearance: 'success', autoDismiss: true, placement: 'bottom-left' });
+            navigate('/');
+        } else {
+            addToast('Invalid credentials!', { appearance: 'error', autoDismiss: true, placement: 'bottom-left' });
+        }
+    }
+
     return (
-        <form className={"ui form"}>
-            <div className={"field"}>
-                <label>Email</label>
-                <input type="text" name="email" placeholder="Email" />
-            </div>
-            <div className={"field"}>
-                <label>Password</label>
-                <input type="text" name="password" placeholder="Password" />
-            </div>
-            <button className={"ui primary button"} type="submit">Login</button>
-        </form>
+        <>
+            <Waves />
+            <form className={"ui form form-mid screen-center"} onSubmit={callLogin}>
+                <h1 className="ui header p-color">Login form</h1>
+                <div className={"field"}>
+                    <label>Email</label>
+                    <input type="email" name="email" ref={emailRef} placeholder="Email" required />
+                </div>
+                <div className={"field"}>
+                    <label>Password</label>
+                    <input type="password" name="password" ref={passwdRef} placeholder="Password" required />
+                </div>
+                <button className={"ui primary button"} type="submit">Login</button>
+            </form>
+        </>
+
     );
 }
 
