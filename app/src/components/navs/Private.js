@@ -9,7 +9,7 @@ function Navigation() {
 
     function callLogout() {
         logoutAction();
-        addToast('Logout success!', { appearance: 'success', autoDismiss: true, placement: 'bottom-left' });
+        addToast('Logout success!', { appearance: 'success', autoDismiss: true, autoDismissTimeout: 2500 });
         navigate('/');
     }
 

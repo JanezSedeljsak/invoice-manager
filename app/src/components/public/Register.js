@@ -20,10 +20,10 @@ function Register() {
         const password = passwdRef.current.value;
         const isOk = await registerAction(fullname, email, password);
         if (isOk) {
-            addToast('Register success!', { appearance: 'success', autoDismiss: true, placement: 'bottom-left' });
+            addToast('Register success!', { appearance: 'success', autoDismiss: true, autoDismissTimeout: 2500 });
             navigate('/');
         } else {
-            addToast('Invalid credentials!', { appearance: 'error', autoDismiss: true, placement: 'bottom-left' });
+            addToast('Invalid credentials!', { appearance: 'error', autoDismiss: true, autoDismissTimeout: 2500 });
         }
     }
 

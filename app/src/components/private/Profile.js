@@ -26,9 +26,9 @@ function Profile() {
 
         const isOk = await updateProfileAction(token, fullname, email, password, old_email, old_password);
         if (isOk) {
-            addToast('Update success!', { appearance: 'success', autoDismiss: true, placement: 'bottom-left' });
+            addToast('Update success!', { appearance: 'success', autoDismiss: true, autoDismissTimeout: 2500 });
         } else {
-            addToast('Update failed!', { appearance: 'error', autoDismiss: true, placement: 'bottom-left' });
+            addToast('Update failed!', { appearance: 'error', autoDismiss: true, autoDismissTimeout: 2500 });
         }
     }
 

@@ -83,3 +83,11 @@ nav * {
   padding: 20px;
   border-radius: 10px;
 }
+
+/* Override position for toasts */
+.react-toast-notifications__container {
+  top: auto !important;
+  left: auto !important;
+  right: 0 !important;
+  bottom: 0 !important;
+}

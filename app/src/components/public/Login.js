@@ -18,10 +18,10 @@ function Login() {
         const password = passwdRef.current.value;
         const isOk = await loginAction(email, password);
         if (isOk) {
-            addToast('Login success!', { appearance: 'success', autoDismiss: true, placement: 'bottom-left' });
+            addToast('Login success!', { appearance: 'success', autoDismiss: true, autoDismissTimeout: 2500 });
             navigate('/');
         } else {
-            addToast('Invalid credentials!', { appearance: 'error', autoDismiss: true, placement: 'bottom-left' });
+            addToast('Invalid credentials!', { appearance: 'error', autoDismiss: true, autoDismissTimeout: 2500 });
         }
     }
 
