@@ -66,6 +66,18 @@ class Requests {
         return [response.status, json];
     }
 
+    static async createGroup(token, name) {
+        const response = await fetch(`${API_URI}/api/v1/group/create`, {
+            method: 'POST',
+            headers: {'Authorization': token },
+            body: generateFormData({ name }),
+        });
+
+        if (response.status !== 200) return [response.status, null];
+        const json = await response.json();
+        return [response.status, json];
+    }
+
     static async users() {
         const response = await fetch(`${API_URI}/api/v1/users`);
         const json = await response.json();

@@ -33,6 +33,7 @@ button.primary {
   width: 70vw;
   max-width: 1500px;
   margin: 0 auto;
+  padding-bottom: 50px;
 }
 
 nav * {
@@ -53,7 +54,8 @@ nav * {
   transform: scaleY(2);
 }
 
-#home-container .home-content, #home-container .cards {
+#home-container .home-content,
+#home-container .cards {
   margin-top: 30vh;
   justify-content: center;
 }
@@ -100,4 +102,40 @@ nav * {
   left: auto !important;
   right: 0 !important;
   bottom: 0 !important;
+}
+
+.modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #72727275;
+  z-index: 999;
+}
+
+.modal-container > * {
+  position: fixed !important;
+  left: 50%;
+  top: calc(50vh - 50px);
+  transform: translateX(-50%) translateY(-50%);
+}
+
+.modal-container .header {
+  background-color: #00cba9 !important;
+  color: #fff !important;
+}
+
+@media only screen and (max-width: 1024px) {
+  .nav-container > nav {
+    width: 90vw;
+  }
+  
+  .content-container {
+    width: 90vw;
+  }
+
+  .m-left-10 {
+    margin: 0;
+  }
 }

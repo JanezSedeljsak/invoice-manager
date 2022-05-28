@@ -14,6 +14,7 @@ import Groups from './components/public/Groups';
 import MyGroups from './components/private/MyGroups';
 import MyInvoices from './components/private/MyInvoices';
 import Profile from './components/private/Profile';
+import GroupDetail from './components/private/GroupDetail';
 
 import NavigationPrivate from './components/navs/Private';
 import NavigationPublic from './components/navs/Public';
@@ -56,6 +57,7 @@ function App() {
             <Route path="/profile-invoices" element={<PrivateRoute><MyInvoices /></PrivateRoute>} />
             <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
 
+            <Route path="/group/edit/:id" element={<GroupDetail />} />
             <Route path='*' element={<NotFound />} />
 
           </Routes>
