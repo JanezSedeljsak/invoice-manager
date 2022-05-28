@@ -35,8 +35,8 @@ function Profile() {
     return (
         <>
             <form className={"ui form"} onSubmit={callProfileUpdate}>
-                <div class="ui raised segment">
-                    <a class="ui teal ribbon label">New credentials</a><br /><br />
+                <div className="ui raised segment">
+                    <a className="ui teal ribbon label">New credentials</a><br /><br />
                     <div className={"field"}>
                         <label>Fullname</label>
                         <input type="text" name="fullname" ref={nameRef} defaultValue={user.fullname} placeholder="Fullname" required />
@@ -54,8 +54,8 @@ function Profile() {
                         <input type="file" name="image" />
                     </div>
                 </div>
-                <div class="ui raised segment">
-                    <a class="ui teal ribbon label">Old credentials</a><br /><br />
+                <div className="ui raised segment">
+                    <a className="ui teal ribbon label">Old credentials</a><br /><br />
                     <div className={"field"}>
                         <label>Email</label>
                         <input type="email" ref={old_emailRef} defaultValue={user.email} name="old_email" placeholder="Old email" required />

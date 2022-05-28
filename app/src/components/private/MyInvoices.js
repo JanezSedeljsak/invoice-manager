@@ -3,12 +3,14 @@ import { useState, useEffect, useRef } from 'react';
 import Moment from 'react-moment';
 import { useStore } from '../../store';
 import { useToasts } from 'react-toast-notifications';
+import { useNavigate } from 'react-router-dom';
 
 function Invoices() {
     const [invoices, setInvoices] = useState([]);
     const [filteredInvoices, setFilteredInvoices] = useState([]);
     const token = useStore(state => state.token);
     const { addToast } = useToasts();
+    const navigate = useNavigate();
 
     const storeFilterRef = useRef(null);
     const amountFilterRef = useRef(null);
@@ -118,6 +120,11 @@ function Invoices() {
             <div className="ui relaxed divided list">
                 {filteredInvoices.map(invoice => (
                     <div className="item" key={`invoice_${invoice.id}`}>
+                        <div className="right floated content">
+                            <button className="ui icon button" onClick={() => navigate(`/invoice/edit/${invoice.id}`)}>
+                                <i className="edit icon"></i>
+                            </button>
+                        </div>
                         <i className="large github middle aligned icon"></i>
                         <div className="content">
                             <a className="header" onClick={() => showInvoiceData(invoice.id)}>

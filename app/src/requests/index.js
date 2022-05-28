@@ -66,12 +66,71 @@ class Requests {
         return [response.status, json];
     }
 
+    static async groupMembers(group_id) {
+        const response = await fetch(`${API_URI}/api/v1/group/members?id=${group_id}`);
+        if (response.status !== 200) return [response.status, null];
+        const json = await response.json();
+        return [response.status, json];
+    }
+
+    static async groupInvoices(group_id, token) {
+        const response = await fetch(`${API_URI}/api/v1/group/invoices?id=${group_id}`, {
+            method: 'GET',
+            headers: {'Authorization': token }
+        });
+        if (response.status !== 200) return [response.status, null];
+        const json = await response.json();
+        return [response.status, json];
+    }
+
+    static async groupShoppingList(group_id, token) {
+        const response = await fetch(`${API_URI}/api/v1/group/shopping-items?id=${group_id}`, {
+            method: 'GET',
+            headers: {'Authorization': token }
+        });
+        if (response.status !== 200) return [response.status, null];
+        const json = await response.json();
+        return [response.status, json];
+    }    
+
     static async createGroup(token, name) {
         const response = await fetch(`${API_URI}/api/v1/group/create`, {
             method: 'POST',
             headers: {'Authorization': token },
             body: generateFormData({ name }),
         });
+
+        if (response.status !== 200) return [response.status, null];
+        const json = await response.json();
+        return [response.status, json];
+    }
+
+    static async createInvoice(token, group_id, store_id, amount, notes, image) {
+        const response = await fetch(`${API_URI}/api/v1/invoice/create?id=${group_id}`, {
+            method: 'POST',
+            headers: {'Authorization': token },
+            body: generateFormData({ group_id, store_id, amount, notes, image }),
+        });
+
+        if (response.status !== 200) return [response.status, null];
+        const json = await response.json();
+        return [response.status, json];
+    }
+
+    static async updateInvoice(token, group_id, store_id, amount, notes, image) {
+        const response = await fetch(`${API_URI}/api/v1/invoice?id=${group_id}`, {
+            method: 'POST',
+            headers: {'Authorization': token },
+            body: generateFormData({ store_id, amount, notes, image }),
+        });
+
+        if (response.status !== 200) return [response.status, null];
+        const json = await response.json();
+        return [response.status, json];
+    }
+
+    static async stores() {
+        const response = await fetch(`${API_URI}/api/v1/stores`);
 
         if (response.status !== 200) return [response.status, null];
         const json = await response.json();

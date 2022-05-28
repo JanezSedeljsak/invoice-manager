@@ -73,12 +73,12 @@ function Groups() {
             <div className="ui relaxed divided list">
                 {filteredGroups.map(group => (
                     <div className="item" key={`group_${group.id}`}>
-                        <div class="right floated content">
-                            <button class="ui yellow icon button" onClick={() => groupReport(group.id)}>
-                                <i class="print icon"></i>
+                        <div className="right floated content">
+                            <button className="ui yellow icon button" onClick={() => groupReport(group.id)}>
+                                <i className="print icon"></i>
                             </button>
-                            <button class="ui icon button" onClick={() => editGroup(group.id)}>
-                                <i class="edit icon"></i>
+                            <button className="ui icon button" onClick={() => editGroup(group.id)}>
+                                <i className="edit icon"></i>
                             </button>
                         </div>
                         <i className="large github middle aligned icon"></i>

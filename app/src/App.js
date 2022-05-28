@@ -15,6 +15,7 @@ import MyGroups from './components/private/MyGroups';
 import MyInvoices from './components/private/MyInvoices';
 import Profile from './components/private/Profile';
 import GroupDetail from './components/private/GroupDetail';
+import GroupInvoiceForm from './components/private/grouptabs/GroupInvoiceForm';
 
 import NavigationPrivate from './components/navs/Private';
 import NavigationPublic from './components/navs/Public';
@@ -23,6 +24,7 @@ import NotFound from './components/NotFound';
 
 import { useStore } from './store';
 import { useToasts } from 'react-toast-notifications';
+
 
 function App() {
   const isAuth = useStore((state) => state.token !== null);
@@ -58,6 +60,7 @@ function App() {
             <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
 
             <Route path="/group/edit/:id" element={<GroupDetail />} />
+            <Route path="/invoice/edit/:id" element={<GroupInvoiceForm />} />
             <Route path='*' element={<NotFound />} />
 
           </Routes>

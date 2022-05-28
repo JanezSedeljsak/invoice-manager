@@ -1,15 +1,13 @@
-import Requests from '../../requests';
-import { useState, useEffect } from 'react';
-import Moment from 'react-moment';
+import { useState } from 'react';
 import { useStore } from '../../store';
 import { useToasts } from 'react-toast-notifications';
-import CreateGroupModal from '../modals/CreateGroupModal';
 import { useParams } from 'react-router-dom';
 
 import GroupMain from './grouptabs/GroupMain';
 import GroupMembers from './grouptabs/GroupMembers';
 import GroupShoppinList from './grouptabs/GroupShoppinList';
 import GroupInvoices from './grouptabs/GroupInvoices';
+import GroupInvoiceForm from './grouptabs/GroupInvoiceForm';
 
 function GroupDetail() {
     const [active, setActive] = useState('main');
@@ -24,6 +22,7 @@ function GroupDetail() {
             case 'members': return <GroupMembers id={id} />;
             case 'list': return <GroupShoppinList id={id} />;
             case 'invoices': return <GroupInvoices id={id} />;
+            case 'add-invoice': return <GroupInvoiceForm group_id={id} mode={'create'} goto_invoices={() => setActive('invoices')} />;
             default: throw new Error("Unknown tab name");
         }
     };
@@ -42,6 +41,9 @@ function GroupDetail() {
                 </a>
                 <a className={`item ${active === 'invoices' ? 'active' : ''}`} onClick={() => setActive('invoices')}>
                     Invoices
+                </a>
+                <a className={`item ${active === 'add-invoice' ? 'active' : ''}`} onClick={() => setActive('add-invoice')}>
+                    Add Invoice
                 </a>
             </div>
             <div className="ui bottom">

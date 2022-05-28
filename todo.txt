@@ -1,0 +1,18 @@
+- Invoice edit [30min]
+- Edit group (only name) [20min]
+- Add member to group [20min]
+- Add shopping item [15min]
+- Delete shopping item [10min]
+
+- User Groups modal [15min]
+- Group users modal [15min]
+
+- Money spent graph [30min]
+- Delete group [10min]
+
+- Reports
+
+# maybe
+- Add image to user profile [30min]
+- Swagger [60min]
+- Server validation [60min]
