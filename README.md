@@ -13,6 +13,28 @@ own account.
 
 The app is built with 2 technologies - `PHP` with a basic MVC structure (no framework) as the `RESTful API` and `React` (with `Semantic UI` and `zustand`) for the frontend.
 
+## Database model
+
+![dbmodel](https://user-images.githubusercontent.com/43420276/170886682-42af5024-af2c-42d2-b607-7184a9f70af7.png)
+
+
+## Site-map
+
+## Local testing
+- Clone the repository with `git clone https://github.com/JanezSedeljsak/invoice-manager.git`
+- Move into `/app` and run `npm i`
+- Generate db with script `db.sql` in `/` directory
+- Run tests with python (not required, but it will generate some more boilerplate users and groups)
+- Run the frontend with `npm run start` or build with `npm run build`
+- After building project everything should run on a apache server (`/api/*` routes are strictly for backend others are for frontend)
+
+#### Auth table
+| Email                     | Password |
+|---------------------------|----------|
+| janez.sedeljsak@gmail.com | geslo123 |
+| john.doe@gmail.com        | geslo123 |
+| lorem.ipsum@gmail.com     | geslo123 |
+
 ## API endpoints
 
 ```json
@@ -59,10 +81,3 @@ The app is built with 2 technologies - `PHP` with a basic MVC structure (no fram
     ]
 }
 ```
-
-## Database model
-
-![dbmodel](https://user-images.githubusercontent.com/43420276/170886682-42af5024-af2c-42d2-b607-7184a9f70af7.png)
-
-
-### Site-map
