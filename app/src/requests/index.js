@@ -199,6 +199,17 @@ class Requests {
         return [response.status, json];
     }
 
+    static async deleteInvoice(token, id) {
+        const response = await fetch(`${API_URI}/api/v1/invoice?id=${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': token }
+        });
+
+        if (response.status !== 200) return [response.status, null];
+        const json = await response.json();
+        return [response.status, json];
+    }
+
     static async invoice(token, id) {
         const response = await fetch(`${API_URI}/api/v1/invoice?id=${id}`, {
             method: 'GET',

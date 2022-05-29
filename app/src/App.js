@@ -61,7 +61,7 @@ function App() {
             <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
 
             <Route path="/group/edit/:id" element={<GroupDetail />} />
-            <Route path="/invoice/edit/:id" element={<GroupInvoiceForm mode="edit" />} />
+            <Route path="/invoice/edit/:id" element={<GroupInvoiceForm mode="edit" goto_invoices={null} />} />
             <Route path="/invoice/detail/:id" element={<GroupInvoiceDetail />} />
             <Route path='*' element={<NotFound />} />
 

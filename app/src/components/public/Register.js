@@ -34,7 +34,7 @@ function Register() {
                 <h1 className="ui header p-color">Register form</h1>
                 <div className={"field"}>
                     <label>Fullname</label>
-                    <input type="text" ref={nameRef} name="fullname" placeholder="Fullname" required />
+                    <input type="text" ref={nameRef} name="fullname" minLength="3" placeholder="Fullname" required />
                 </div>
                 <div className={"field"}>
                     <label>Email</label>
@@ -42,7 +42,7 @@ function Register() {
                 </div>
                 <div className={"field"}>
                     <label>Password</label>
-                    <input type="password" ref={passwdRef} name="password" placeholder="Password" required />
+                    <input type="password" ref={passwdRef} name="password" minLength="3" placeholder="Password" required />
                 </div>
                 <button className={"ui primary button"} type="submit">Register</button>
             </form>

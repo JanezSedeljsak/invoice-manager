@@ -46,6 +46,17 @@ function GroupInvoiceForm({ mode, group_id, goto_invoices }) {
     const amountRef = useRef(null);
     const notesRef = useRef(null);
 
+    async function deleteInvoice(invoiceId) {
+        const [status, _] = await Requests.deleteInvoice(token, invoiceId);
+        if (status === 200) {
+            addToast('Deleted invocie successfully!', { appearance: 'success', autoDismiss: true, autoDismissTimeout: 2500 });
+            if (goto_invoices !== null) goto_invoices();
+            else navigate(-1);
+        } else {
+            addToast('Failed to delete invocie!', { appearance: 'error', autoDismiss: true, autoDismissTimeout: 2500 });
+        }
+    }
+
     async function callInvoiceCreate(event) {
         event.preventDefault();
         const store = storeRef.current.value;
@@ -55,7 +66,8 @@ function GroupInvoiceForm({ mode, group_id, goto_invoices }) {
         const [status, _] = await Requests.createInvoice(token, group_id, store, amount, notes, invoiceImage?.base64 ?? '/');
         if (status === 200) {
             addToast('Created Invocie!', { appearance: 'success', autoDismiss: true, autoDismissTimeout: 2500 });
-            goto_invoices();
+            if (goto_invoices !== null) goto_invoices();
+            else navigate(-1);
         } else {
             addToast('Failed creating invocie!', { appearance: 'error', autoDismiss: true, autoDismissTimeout: 2500 });
         }
@@ -111,7 +123,8 @@ function GroupInvoiceForm({ mode, group_id, goto_invoices }) {
                     </div>
                 </div>
                 <button className={"ui primary button"} type="submit">{mode === 'create' ? 'Create Invoice' : 'Edit Invoice'}</button>
-                <button className={"ui red button"} onClick={() => navigate(-1)} type="button">Go back</button>
+                {mode === 'edit' ? <button className={"ui red button"} onClick={() => deleteInvoice(params.id)} type="button">Delete</button> : null}
+                <button className={"ui button"} onClick={() => navigate(-1)} type="button">Go back</button>
             </form>
         </>
 

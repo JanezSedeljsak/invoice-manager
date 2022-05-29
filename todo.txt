@@ -12,8 +12,8 @@
 - Add image to invocie [30min] # done
 - Fix images [20min] # done
 
-- Delete invoice [15min]
-- Server validation [30min]
+- Delete invoice [15min] # done
+- Server validation [30min] # done
 - Reports [1h]
 
 

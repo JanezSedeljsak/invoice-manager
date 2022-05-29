@@ -36,7 +36,7 @@ function Login() {
                 </div>
                 <div className={"field"}>
                     <label>Password</label>
-                    <input type="password" name="password" ref={passwdRef} placeholder="Password" required />
+                    <input type="password" name="password" ref={passwdRef} minLength="3" placeholder="Password" required />
                 </div>
                 <button className={"ui primary button"} type="submit">Login</button>
             </form>

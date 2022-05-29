@@ -31,7 +31,7 @@ function CreateGroupModal({ visible, setVisible }) {
                 <form className={"ui form"} style={{ padding: 10 }} onSubmit={callCreateGroup}>
                     <div className={"field"}>
                         <label>Group name</label>
-                        <input type="text" name="fullname" ref={nameRef} minLength="5" placeholder="Group name" required />
+                        <input type="text" name="fullname" ref={nameRef} minLength="3" placeholder="Group name" required />
                     </div>
 
                     <button className='ui button teal'>Create</button>
