@@ -91,10 +91,33 @@ class Requests {
         if (response.status !== 200) return [response.status, null];
         const json = await response.json();
         return [response.status, json];
-    }    
+    }
 
     static async createGroup(token, name) {
         const response = await fetch(`${API_URI}/api/v1/group/create`, {
+            method: 'POST',
+            headers: {'Authorization': token },
+            body: generateFormData({ name }),
+        });
+
+        if (response.status !== 200) return [response.status, null];
+        const json = await response.json();
+        return [response.status, json];
+    }
+
+    static async getGroup(token, id) {
+        const response = await fetch(`${API_URI}/api/v1/group?id=${id}`, {
+            method: 'GET',
+            headers: {'Authorization': token }
+        });
+
+        if (response.status !== 200) return [response.status, null];
+        const json = await response.json();
+        return [response.status, json];
+    }
+
+    static async updateGroup(token, id, name) {
+        const response = await fetch(`${API_URI}/api/v1/group?id=${id}`, {
             method: 'POST',
             headers: {'Authorization': token },
             body: generateFormData({ name }),
@@ -117,11 +140,22 @@ class Requests {
         return [response.status, json];
     }
 
-    static async updateInvoice(token, group_id, store_id, amount, notes, image) {
-        const response = await fetch(`${API_URI}/api/v1/invoice?id=${group_id}`, {
+    static async updateInvoice(token, id, store_id, amount, notes, image) {
+        const response = await fetch(`${API_URI}/api/v1/invoice?id=${id}`, {
             method: 'POST',
             headers: {'Authorization': token },
             body: generateFormData({ store_id, amount, notes, image }),
+        });
+
+        if (response.status !== 200) return [response.status, null];
+        const json = await response.json();
+        return [response.status, json];
+    }
+
+    static async invoice(token, id) {
+        const response = await fetch(`${API_URI}/api/v1/invoice?id=${id}`, {
+            method: 'GET',
+            headers: {'Authorization': token }
         });
 
         if (response.status !== 200) return [response.status, null];

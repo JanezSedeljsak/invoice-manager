@@ -102,7 +102,7 @@ class UserModel {
         $db = DBInit::connect();
 
         $statement = $db->prepare("
-            SELECT email, fullname, registered_at FROM user
+            SELECT id, email, fullname, registered_at FROM user
             WHERE email = :email;
         ");
         $statement->execute(array('email' => $email));

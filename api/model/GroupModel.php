@@ -28,7 +28,7 @@ class GroupModel {
         $db = DBInit::connect();
 
         $statement = $db->prepare("
-            SELECT i.id, u.fullname, u.email, i.amount, i.date, i.notes, i.image, s.name AS store_name
+            SELECT i.id, i.user_id, u.fullname, u.email, i.amount, i.date, i.notes, i.image, s.name AS store_name
             FROM invoice i
             INNER JOIN user u ON u.id = i.user_id
             INNER JOIN store s ON s.id = i.store_id

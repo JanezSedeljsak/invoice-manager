@@ -9,6 +9,7 @@ function GroupInvocies({ id }) {
     const [invoices, setInvoices] = useState([]);
     const [filteredInvoices, setFilteredInvoices] = useState([]);
     const token = useStore(state => state.token);
+    const current_user = useStore(state => state.user);
     const { addToast } = useToasts();
     const navigate = useNavigate();
 
@@ -120,11 +121,13 @@ function GroupInvocies({ id }) {
             <div className="ui relaxed divided list">
                 {filteredInvoices.map(invoice => (
                     <div className="item" key={`invoice_${invoice.id}`}>
-                        <div className="right floated content">
-                            <button className="ui icon button" onClick={() => navigate(`/invoice/edit/${invoice.id}`)}>
-                                <i className="edit icon"></i>
-                            </button>
-                        </div>
+                        {current_user.id === invoice.user_id ?
+                            <div className="right floated content">
+                                <button className="ui icon button" onClick={() => navigate(`/invoice/edit/${invoice.id}`)}>
+                                    <i className="edit icon"></i>
+                                </button>
+                            </div>
+                            : null}
                         <i className="large github middle aligned icon"></i>
                         <div className="content">
                             <a className="header" onClick={() => showInvoiceData(invoice.id)}>

@@ -1,5 +1,5 @@
 import Requests from '../../requests';
-import { useState, useRef } from 'react';
+import { useRef } from 'react';
 import { useStore } from '../../store';
 import { useToasts } from 'react-toast-notifications';
 
