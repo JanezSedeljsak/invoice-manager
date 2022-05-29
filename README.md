@@ -15,7 +15,50 @@ The app is built with 2 technologies - `PHP` with a basic MVC structure (no fram
 
 ## API endpoints
 
-![endpoints](https://user-images.githubusercontent.com/43420276/170884434-c24c1fd1-6ba9-4f0c-8877-c979a6f95e1c.png)
+```json
+{
+    "api_routes": [
+        "api\/v1\/login",
+        "api\/v1\/register",
+        "api\/v1\/users",
+        "api\/v1\/profile\/groups",
+        "api\/v1\/profile\/edit",
+        "api\/v1\/profile\/invoices",
+        "api\/v1\/user\/groups",
+        "api\/v1\/groups",
+        "api\/v1\/group\/add-user",
+        "api\/v1\/group\/members",
+        "api\/v1\/group\/potential-members",
+        "api\/v1\/group\/invoices",
+        "api\/v1\/group\/shopping-items",
+        "api\/v1\/group\/create",
+        "api\/v1\/group",
+        "api\/v1\/invoice\/create",
+        "api\/v1\/invoice",
+        "api\/v1\/shopping-item\/create",
+        "api\/v1\/shopping-item",
+        "api\/v1\/stores",
+        "api\/v1\/analysis\/invoice"
+    ],
+    "docs_routes": [
+        "api\/v1\/docs\/routes-map"
+    ],
+    "test_routes": [
+        "api\/v1\/test\/status\/200",
+        "api\/v1\/test\/status\/400",
+        "api\/v1\/test\/status\/401",
+        "api\/v1\/test\/status\/404",
+        "api\/v1\/test\/status\/405",
+        "api\/v1\/test\/method-get",
+        "api\/v1\/test\/method-post",
+        "api\/v1\/test\/method-delete",
+        "api\/v1\/test",
+        "api\/v1\/test\/id",
+        "api\/v1\/test\/other",
+        "api\/v1\/test\/select"
+    ]
+}
+```
 
 ## Database model
 
