@@ -29,6 +29,7 @@ function GroupMain({ id }) {
 
     const [group, setGroup] = useState({});
     const [userMap, setUserMap] = useState(new Map());
+    const [storeMap, setStoreMap] = useState(new Map());
 
     useEffect(() => {
         getGroup();
@@ -59,9 +60,14 @@ function GroupMain({ id }) {
         }
 
         const userDist = new Map();
+        const storeDist = new Map();
+
         invoiceResponse.forEach(invoice => {
             const prev = userDist.get(invoice.email) ?? 0;
             userDist.set(invoice.email, prev + invoice.amount);
+
+            const prevStore = storeDist.get(invoice.store_name) ?? 0;
+            storeDist.set(invoice.store_name, prevStore + invoice.amount);
         });
 
         membersResponse.forEach(member => {
@@ -71,6 +77,7 @@ function GroupMain({ id }) {
             }
         });
 
+        setStoreMap(new Map([...storeDist.entries()].sort((a, b) => b[1] - a[1])))
         setUserMap(new Map([...userDist.entries()].sort((a, b) => b[1] - a[1])));
     }
 
@@ -99,18 +106,8 @@ function GroupMain({ id }) {
         },
     };
 
-    const labels = [...userMap.keys()];
     const randomNum = () => Math.floor(Math.random() * (235 - 52 + 1) + 52);
     const randomRGB = () => `rgb(${randomNum()}, ${randomNum()}, ${randomNum()})`;
-
-    const data = {
-        labels,
-        datasets: [{
-            label: 'Money spent distribution',
-            data: [...userMap.values()],
-            backgroundColor: labels.map(_ => randomRGB())
-        }],
-    };
 
     return (
         <>
@@ -126,11 +123,31 @@ function GroupMain({ id }) {
             </form>
 
             <div className="ui raised segment">
-                <a className="ui teal ribbon label">Distribution chart</a><br /><br />
+                <a className="ui teal ribbon label">User distribution chart</a><br /><br />
                 <div style={{ height: 400 }}>
-                    <Bar options={options} data={data} />
+                    <Bar options={options} data={{
+                        labels: [...userMap.keys()],
+                        datasets: [{
+                            label: 'User money spent distribution',
+                            data: [...userMap.values()],
+                            backgroundColor: [...userMap.keys()].map(_ => randomRGB())
+                        }],
+                    }} />
                 </div>
+            </div>
 
+            <div className="ui raised segment">
+                <a className="ui teal ribbon label">Store distribution chart</a><br /><br />
+                <div style={{ height: 400 }}>
+                    <Bar options={options} data={{
+                        labels: [...storeMap.keys()],
+                        datasets: [{
+                            label: 'Store money spent distribution',
+                            data: [...storeMap.values()],
+                            backgroundColor: [...storeMap.keys()].map(_ => randomRGB())
+                        }],
+                    }} />
+                </div>
             </div>
         </>
     )
