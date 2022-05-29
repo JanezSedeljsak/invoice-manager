@@ -8,7 +8,7 @@ import GroupInvoices from './grouptabs/GroupInvoices';
 import GroupInvoiceForm from './grouptabs/GroupInvoiceForm';
 
 function GroupDetail() {
-    const [active, setActive] = useState('main');
+    const [active, setActive] = useState('invoices');
     const { id } = useParams();
 
     function getTabContent() {

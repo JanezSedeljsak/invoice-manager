@@ -117,13 +117,18 @@ function GroupInvocies({ id }) {
             <div className="ui relaxed divided list">
                 {filteredInvoices.map(invoice => (
                     <div className="item" key={`invoice_${invoice.id}`}>
-                        {current_user.id === invoice.user_id ?
-                            <div className="right floated content">
+
+                        <div className="right floated content">
+                            {current_user.id === invoice.user_id ?
                                 <button className="ui icon button" onClick={() => navigate(`/invoice/edit/${invoice.id}`)}>
                                     <i className="edit icon"></i>
                                 </button>
-                            </div>
-                            : null}
+                                : null}
+                            <button className="ui icon teal button" onClick={() => navigate(`/invoice/detail/${invoice.id}`)}>
+                                <i className="expand icon"></i>
+                            </button>
+                        </div>
+
                         <i className="large github middle aligned icon"></i>
                         <div className="content">
                             <a className="header">

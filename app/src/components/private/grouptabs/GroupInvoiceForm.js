@@ -3,6 +3,7 @@ import { useStore } from '../../../store';
 import { useToasts } from 'react-toast-notifications';
 import Requests from '../../../requests';
 import { useParams, useNavigate } from 'react-router-dom';
+import FileBase64 from 'react-file-base64';
 
 function GroupInvoiceForm({ mode, group_id, goto_invoices }) {
     const token = useStore(state => state.token);
@@ -12,6 +13,7 @@ function GroupInvoiceForm({ mode, group_id, goto_invoices }) {
 
     const [invoice, setInvoice] = useState({});
     const [stores, setStores] = useState([]);
+    const [invoiceImage, setInvoiceImage] = useState(null);
 
     useEffect(() => {
         getData();
@@ -50,7 +52,7 @@ function GroupInvoiceForm({ mode, group_id, goto_invoices }) {
         const amount = amountRef.current.value;
         const notes = notesRef.current.value;
 
-        const [status, _] = await Requests.createInvoice(token, group_id, store, amount, notes, '/');
+        const [status, _] = await Requests.createInvoice(token, group_id, store, amount, notes, invoiceImage?.base64 ?? '/');
         if (status === 200) {
             addToast('Created Invocie!', { appearance: 'success', autoDismiss: true, autoDismissTimeout: 2500 });
             goto_invoices();
@@ -66,7 +68,7 @@ function GroupInvoiceForm({ mode, group_id, goto_invoices }) {
         const amount = amountRef.current.value;
         const notes = notesRef.current.value;
 
-        const [status, _] = await Requests.updateInvoice(token, params.id, store, amount, notes, '/');
+        const [status, _] = await Requests.updateInvoice(token, params.id, store, amount, notes, invoiceImage?.base64 ?? '/');
         if (status === 200) {
             addToast('Update success!', { appearance: 'success', autoDismiss: true, autoDismissTimeout: 2500 });
         } else {
@@ -95,6 +97,13 @@ function GroupInvoiceForm({ mode, group_id, goto_invoices }) {
                                 </option>
                             )}
                         </select>
+                    </div>
+                    <div className={"field"}>
+                        {invoiceImage !== null ? <img src={invoiceImage.base64} className='invoice-image' /> : null}
+                        {(invoice?.image && invoice?.image !== '/' && !invoiceImage) ? <img src={invoice.image} className='invoice-image' /> : null}
+
+                        <label>Invoice image</label>
+                        <FileBase64 multiple={false} onDone={setInvoiceImage} />
                     </div>
                     <div className={"field"}>
                         <label>Notes</label>

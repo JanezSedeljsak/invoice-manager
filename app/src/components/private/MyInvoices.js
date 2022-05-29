@@ -120,6 +120,9 @@ function Invoices() {
                             <button className="ui icon button" onClick={() => navigate(`/invoice/edit/${invoice.id}`)}>
                                 <i className="edit icon"></i>
                             </button>
+                            <button className="ui icon teal button" onClick={() => navigate(`/invoice/detail/${invoice.id}`)}>
+                                <i className="expand icon"></i>
+                            </button>
                         </div>
                         <i className="large github middle aligned icon"></i>
                         <div className="content">

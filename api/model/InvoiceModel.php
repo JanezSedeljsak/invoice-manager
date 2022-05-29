@@ -21,9 +21,12 @@ class InvoiceModel {
         $db = DBInit::connect();
 
         $statement = $db->prepare("
-            SELECT id, image, date, amount, notes, group_id, user_id, store_id
-            FROM `invoice` 
-            WHERE id = :id"
+            SELECT i.id, i.image, i.date, i.amount, i.notes, i.group_id, i.user_id, i.store_id, u.fullname, u.email, s.name AS store_name, g.name AS group_name
+            FROM `invoice` i 
+            INNER JOIN store s ON s.id = i.store_id
+            INNER JOIN `user` u ON u.id = i.user_id
+            INNER JOIN `group` g ON g.id = i.group_id
+            WHERE i.id = :id"
         );
         $statement->execute(array("id" => $id));
 

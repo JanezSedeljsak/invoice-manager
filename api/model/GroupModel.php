@@ -32,7 +32,9 @@ class GroupModel {
             FROM invoice i
             INNER JOIN user u ON u.id = i.user_id
             INNER JOIN store s ON s.id = i.store_id
-            WHERE group_id = :group_id");
+            WHERE group_id = :group_id
+            ORDER BY DATE(i.date), u.fullname, s.name    
+        ");
         $statement->execute(array("group_id" => $group_id));
 
         return $statement->fetchAll();

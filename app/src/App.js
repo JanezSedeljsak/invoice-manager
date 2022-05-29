@@ -16,6 +16,7 @@ import MyInvoices from './components/private/MyInvoices';
 import Profile from './components/private/Profile';
 import GroupDetail from './components/private/GroupDetail';
 import GroupInvoiceForm from './components/private/grouptabs/GroupInvoiceForm';
+import GroupInvoiceDetail from './components/private/grouptabs/GroupInvoiceDetail';
 
 import NavigationPrivate from './components/navs/Private';
 import NavigationPublic from './components/navs/Public';
@@ -61,6 +62,7 @@ function App() {
 
             <Route path="/group/edit/:id" element={<GroupDetail />} />
             <Route path="/invoice/edit/:id" element={<GroupInvoiceForm mode="edit" />} />
+            <Route path="/invoice/detail/:id" element={<GroupInvoiceDetail />} />
             <Route path='*' element={<NotFound />} />
 
           </Routes>

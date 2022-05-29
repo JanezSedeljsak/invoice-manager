@@ -49,10 +49,6 @@ function Profile() {
                         <label>Password</label>
                         <input type="password" name="password" ref={passwdRef} placeholder="Password" required />
                     </div>
-                    <div className={"field"}>
-                        <label>Profile image</label>
-                        <input type="file" name="image" />
-                    </div>
                 </div>
                 <div className="ui raised segment">
                     <a className="ui teal ribbon label">Old credentials</a><br /><br />

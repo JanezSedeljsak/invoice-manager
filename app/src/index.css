@@ -130,7 +130,7 @@ nav * {
   .nav-container > nav {
     width: 90vw;
   }
-  
+
   .content-container {
     width: 90vw;
   }
@@ -138,4 +138,9 @@ nav * {
   .m-left-10 {
     margin: 0;
   }
+}
+
+.invoice-image {
+  height: 300px;
+  object-fit: cover;
 }
