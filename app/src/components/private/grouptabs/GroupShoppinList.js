@@ -3,12 +3,21 @@ import { useState, useEffect } from 'react';
 import Moment from 'react-moment';
 import { useStore } from '../../../store';
 import { useToasts } from 'react-toast-notifications';
+import CreateShoppingItemModal from '../../modals/CreateShoppingItemModal';
 
 function GroupShoppinList({ id }) {
     const { addToast } = useToasts();
     const token = useStore(state => state.token);
 
     const [items, setItems] = useState([]);
+    const [modalVisible, setModalVisible] = useState(false);
+
+    function setModalVisibleWrapper(visibility, refresh) {
+        setModalVisible(visibility);
+        if (refresh) {
+            getData();
+        }
+    }
 
     useEffect(() => {
         getData();
@@ -41,6 +50,14 @@ function GroupShoppinList({ id }) {
 
     return (
         <>
+            <CreateShoppingItemModal visible={modalVisible} setVisible={setModalVisibleWrapper} group_id={id} />
+            <div>
+                <button className="ui labeled icon primary button" onClick={() => setModalVisible(true)}>
+                    <i className="plus icon"></i>
+                    Add item
+                </button>
+            </div>
+
             <div className="ui relaxed divided list">
                 {items.map(item => (
                     <div className="item" key={`item_${item.id}`}>

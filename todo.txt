@@ -1,7 +1,7 @@
 - Invoice edit [30min] # done
 - Edit group (only name) [20min] # done
-- Add member to group [20min]
-- Add shopping item [15min]
+- Add member to group [20min] # done
+- Add shopping item [15min] # done
 - Delete shopping item [10min] # done
 
 - User Groups modal [15min]

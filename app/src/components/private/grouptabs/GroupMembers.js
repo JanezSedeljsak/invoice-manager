@@ -3,15 +3,24 @@ import { useState, useEffect } from 'react';
 import Moment from 'react-moment';
 import { useStore } from '../../../store';
 import { useToasts } from 'react-toast-notifications';
+import CreateGroupMemberModal from '../../modals/CreateGroupMemberModal';
 
 function GroupMembers({ id }) {
     const { addToast } = useToasts();
     const [users, setUsers] = useState([]);
     const [filteredUsers, setFilteredUsers] = useState([]);
+    const [modalVisible, setModalVisible] = useState(false);
 
     useEffect(() => {
         getData();
     }, []);
+
+    function setModalVisibleWrapper(visibility, refresh) {
+        setModalVisible(visibility);
+        if (refresh) {
+            getData();
+        }
+    }
 
     async function getData() {
         const [status, usersResponse] = await Requests.groupMembers(id);
@@ -35,11 +44,18 @@ function GroupMembers({ id }) {
 
     return (
         <>
-            <div className="ui search">
-                <div className="ui icon input">
-                    <input className="prompt" type="text" onKeyUp={event => filterUsers(event.target.value)} placeholder="Search users..." />
-                    <i className="search icon"></i>
+            <CreateGroupMemberModal visible={modalVisible} setVisible={setModalVisibleWrapper} group_id={id} />
+            <div className='horizontal-container ui'>
+                <div className="ui search">
+                    <div className="ui icon input">
+                        <input className="prompt" type="text" onKeyUp={event => filterUsers(event.target.value)} placeholder="Search users..." />
+                        <i className="search icon"></i>
+                    </div>
                 </div>
+                <button className="ui labeled icon primary button right floated" onClick={() => setModalVisible(true)}>
+                    <i className="plus icon"></i>
+                    Add member
+                </button>
             </div>
             <div className="ui relaxed divided list">
                 {filteredUsers.map(user => (

@@ -35,7 +35,7 @@ class Requests {
     static async updateProfile(token, fullname, email, password, old_email, old_password) {
         const response = await fetch(`${API_URI}/api/v1/profile/edit`, {
             method: 'POST',
-            headers: {'Authorization': token },
+            headers: { 'Authorization': token },
             body: generateFormData({ fullname, email, password, old_email, old_password }),
         });
 
@@ -47,7 +47,7 @@ class Requests {
     static async profileGroups(token) {
         const response = await fetch(`${API_URI}/api/v1/profile/groups`, {
             method: 'GET',
-            headers: {'Authorization': token }
+            headers: { 'Authorization': token }
         });
 
         if (response.status !== 200) return [response.status, null];
@@ -58,7 +58,7 @@ class Requests {
     static async profileInvoices(token) {
         const response = await fetch(`${API_URI}/api/v1/profile/invoices`, {
             method: 'GET',
-            headers: {'Authorization': token }
+            headers: { 'Authorization': token }
         });
 
         if (response.status !== 200) return [response.status, null];
@@ -76,7 +76,7 @@ class Requests {
     static async groupInvoices(group_id, token) {
         const response = await fetch(`${API_URI}/api/v1/group/invoices?id=${group_id}`, {
             method: 'GET',
-            headers: {'Authorization': token }
+            headers: { 'Authorization': token }
         });
         if (response.status !== 200) return [response.status, null];
         const json = await response.json();
@@ -86,7 +86,7 @@ class Requests {
     static async groupShoppingList(group_id, token) {
         const response = await fetch(`${API_URI}/api/v1/group/shopping-items?id=${group_id}`, {
             method: 'GET',
-            headers: {'Authorization': token }
+            headers: { 'Authorization': token }
         });
         if (response.status !== 200) return [response.status, null];
         const json = await response.json();
@@ -96,8 +96,38 @@ class Requests {
     static async deleteListItem(item_id, token) {
         const response = await fetch(`${API_URI}/api/v1/shopping-item?id=${item_id}`, {
             method: 'DELETE',
-            headers: {'Authorization': token }
+            headers: { 'Authorization': token }
         });
+        if (response.status !== 200) return [response.status, null];
+        const json = await response.json();
+        return [response.status, json];
+    }
+
+    static async createItem(token, name, group_id) {
+        const response = await fetch(`${API_URI}/api/v1/shopping-item/create`, {
+            method: 'POST',
+            headers: { 'Authorization': token },
+            body: generateFormData({ name, group_id })
+        });
+        if (response.status !== 200) return [response.status, null];
+        const json = await response.json();
+        return [response.status, json];
+    }
+
+    static async potentialMembers(group_id) {
+        const response = await fetch(`${API_URI}/api/v1/group/potential-members?id=${group_id}`);
+        if (response.status !== 200) return [response.status, null];
+        const json = await response.json();
+        return [response.status, json];
+    }
+
+    static async addMember(token, user_id, group_id) {
+        const response = await fetch(`${API_URI}/api/v1/group/add-user?id=${group_id}`, {
+            method: 'POST',
+            headers: { 'Authorization': token },
+            body: generateFormData({ user_id }),
+        });
+
         if (response.status !== 200) return [response.status, null];
         const json = await response.json();
         return [response.status, json];
@@ -106,7 +136,7 @@ class Requests {
     static async createGroup(token, name) {
         const response = await fetch(`${API_URI}/api/v1/group/create`, {
             method: 'POST',
-            headers: {'Authorization': token },
+            headers: { 'Authorization': token },
             body: generateFormData({ name }),
         });
 
@@ -118,7 +148,7 @@ class Requests {
     static async getGroup(token, id) {
         const response = await fetch(`${API_URI}/api/v1/group?id=${id}`, {
             method: 'GET',
-            headers: {'Authorization': token }
+            headers: { 'Authorization': token }
         });
 
         if (response.status !== 200) return [response.status, null];
@@ -129,7 +159,7 @@ class Requests {
     static async updateGroup(token, id, name) {
         const response = await fetch(`${API_URI}/api/v1/group?id=${id}`, {
             method: 'POST',
-            headers: {'Authorization': token },
+            headers: { 'Authorization': token },
             body: generateFormData({ name }),
         });
 
@@ -141,7 +171,7 @@ class Requests {
     static async createInvoice(token, group_id, store_id, amount, notes, image) {
         const response = await fetch(`${API_URI}/api/v1/invoice/create?id=${group_id}`, {
             method: 'POST',
-            headers: {'Authorization': token },
+            headers: { 'Authorization': token },
             body: generateFormData({ group_id, store_id, amount, notes, image }),
         });
 
@@ -153,7 +183,7 @@ class Requests {
     static async updateInvoice(token, id, store_id, amount, notes, image) {
         const response = await fetch(`${API_URI}/api/v1/invoice?id=${id}`, {
             method: 'POST',
-            headers: {'Authorization': token },
+            headers: { 'Authorization': token },
             body: generateFormData({ store_id, amount, notes, image }),
         });
 
@@ -165,7 +195,7 @@ class Requests {
     static async invoice(token, id) {
         const response = await fetch(`${API_URI}/api/v1/invoice?id=${id}`, {
             method: 'GET',
-            headers: {'Authorization': token }
+            headers: { 'Authorization': token }
         });
 
         if (response.status !== 200) return [response.status, null];
