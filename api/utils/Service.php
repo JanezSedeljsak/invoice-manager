@@ -26,6 +26,26 @@ class Service {
             if (!isset($obj[$key]) || empty($obj[$key])) {
                 return false;
             }
+
+            switch ($key) {
+                case 'email':
+                    if (!filter_var($obj[$key], FILTER_VALIDATE_EMAIL)) {
+                        return false;
+                    }
+                    break;
+                case 'amount':
+                    if (!filter_var($obj[$key], FILTER_VALIDATE_INT) || $obj[$key] <= 0) {
+                        return false;
+                    }
+                    break;
+                case 'fullname':
+                case 'name':
+                case 'password':
+                    if (strlen($obj[$key]) < 3) {
+                        return false;
+                    }
+                    break;
+            }
         }
 
         return true;

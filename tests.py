@@ -170,6 +170,14 @@ class ApiTests(unittest.TestCase):
         response = requests.post(f'http://{base_uri}/api/v1/register', data=data) # empty credentials (bad request - 400)
         self.assertEqual(response.status_code, 400)
 
+        data = {'email': 'invalid_email', 'password': 'geslo123', 'fullname': 'python_generated'}
+        response = requests.post(f'http://{base_uri}/api/v1/register', data=data) # invalid email
+        self.assertEqual(response.status_code, 400)
+
+        data = {'email': 'python_generated@gmail.com', 'password': 'a', 'fullname': 'python_generated'}
+        response = requests.post(f'http://{base_uri}/api/v1/register', data=data) # invalid password (min 3 symbols)
+        self.assertEqual(response.status_code, 400)
+
         data = {'email': 'python_generated@gmail.com', 'password': 'geslo123', 'fullname': 'python_generated'}
         response = requests.post(f'http://{base_uri}/api/v1/register', data=data) # should get token
         self.assertEqual(response.status_code, 200)
@@ -250,6 +258,10 @@ class ApiTests(unittest.TestCase):
 
         response = requests.post(f'http://{base_uri}/api/v1/group/create', headers=headers) # missing data 400
         self.assertEqual(response.status_code, 400)
+
+        data = {'name': '_'}
+        response = requests.post(f'http://{base_uri}/api/v1/group/create', headers=headers, data=data)
+        self.assertEqual(response.status_code, 400) # name is to short
 
         data = {'name': 'Python group'}
         response = requests.post(f'http://{base_uri}/api/v1/group/create', headers=headers, data=data)
@@ -441,6 +453,14 @@ class ApiTests(unittest.TestCase):
         data = {'image': '/', 'group_id': group_id, 'store_id': group_id, 'amount': 53, 'notes': 'Testiranje vnosa'} 
         response = requests.post(f'http://{base_uri}/api/v1/invoice/create', headers=headers, data=data) # 404 invalid store_id
         self.assertEqual(response.status_code, 404)
+
+        data = {'image': '/', 'group_id': group_id, 'store_id': store_id, 'amount': "invalid_int", 'notes': 'Testiranje vnosa'}
+        response = requests.post(f'http://{base_uri}/api/v1/invoice/create', headers=headers, data=data) # amount should be positive int
+        self.assertEqual(response.status_code, 400)
+
+        data = {'image': '/', 'group_id': group_id, 'store_id': store_id, 'amount': -100, 'notes': 'Testiranje vnosa'}
+        response = requests.post(f'http://{base_uri}/api/v1/invoice/create', headers=headers, data=data) # amount should be positive int
+        self.assertEqual(response.status_code, 400)
 
         data = {'image': '/', 'group_id': group_id, 'store_id': store_id, 'amount': 53, 'notes': 'Testiranje vnosa'}
         response = requests.post(f'http://{base_uri}/api/v1/invoice/create', headers=headers, data=data)
