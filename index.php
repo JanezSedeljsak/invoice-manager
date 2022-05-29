@@ -58,8 +58,8 @@ $api_routes = array(
         "DELETE" => fn($id) => InvoiceController::delete($id)
     ), true),
 
-    "api/v1/shopping-item/create" => req_auth(['POST'], fn() => ShoppingItemController::insert()), # TODO
-    "api/v1/shopping-item" => req_auth_select(array( # TODO
+    "api/v1/shopping-item/create" => req_auth(['POST'], fn() => ShoppingItemController::insert()), # ok
+    "api/v1/shopping-item" => req_auth_select(array( # ok
         "GET" => fn($id) => ShoppingItemController::get($id),
         "DELETE" => fn($id) => ShoppingItemController::delete($id)
     ), true),
@@ -68,20 +68,18 @@ $api_routes = array(
 
     "api/v1/analysis/group/summary" => req(['GET'], fn($id) => ReportController::group_summary($id), true), # todo
     "api/v1/analysis/invoice" => req(['GET'], fn($id) => ReportController::invoice($id), true), # todo
-    "api/v1/analysis/profile/invoices" => req(['GET'], fn() => ReportController::user_invoices()), # ok
+    "api/v1/analysis/profile/invoices" => req(['GET'], fn() => ReportController::user_invoices()), # todo
 );
 
 $test_routes = array(
     "api/v1/test/status/200" => req(['GET'], fn() => Response::ok()),
     "api/v1/test/status/400" => req(['GET'], fn() => Response::error400()),
     "api/v1/test/status/401" => req(['GET'], fn() => Response::error401()),
-    "api/v1/test/status/403" => req(['GET'], fn() => Response::error403()),
     "api/v1/test/status/404" => req(['GET'], fn() => Response::error404()),
     "api/v1/test/status/405" => req(['GET'], fn() => Response::error405()),
 
     "api/v1/test/method-get" => req(['GET'], fn() => Response::ok()),
     "api/v1/test/method-post" => req(['POST'], fn() => Response::ok()),
-    "api/v1/test/method-put" => req(['PUT'], fn() => Response::ok()),
     "api/v1/test/method-delete" => req(['DELETE'], fn() => Response::ok()),
 
     // testing core functionality (+ restrictions)
@@ -94,7 +92,12 @@ $test_routes = array(
     ])
 );
 
-$routes = array_merge($api_routes, $test_routes);
+$docs_routes = array(
+    "api/v1/docs/routes-map" => req(['GET'], fn() => Factory::routes_map($api_routes, $test_routes)), # todo
+);
+
+$routes = array_merge($api_routes, array_merge($test_routes, $docs_routes));
+
 
 try {
     Factory::serve(strtolower($path), $routes);

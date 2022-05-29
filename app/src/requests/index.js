@@ -240,6 +240,12 @@ class Requests {
         const json = await response.json();
         return json;
     }
+
+    static async routesMap() {
+        const response = await fetch(`${API_URI}/api/v1/docs/routes-map`);
+        const json = await response.json();
+        return json;
+    }
 }
 
 export default Requests;

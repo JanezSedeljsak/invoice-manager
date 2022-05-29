@@ -110,7 +110,7 @@ class ApiTests(unittest.TestCase):
     def test_4_all_status_codes(self):
         """Status code should be correctly sent based on Response class in Response.php file!"""
 
-        for staus in (200, 400, 401, 403, 404, 405):
+        for staus in (200, 400, 401, 404, 405):
             response = requests.get(f'http://{base_uri}/api/v1/test/status/{staus}')
             self.assertEqual(response.status_code, staus)
 
@@ -121,9 +121,6 @@ class ApiTests(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
 
         response = requests.post(f'http://{base_uri}/api/v1/test/method-post')
-        self.assertEqual(response.status_code, 200)
-
-        response = requests.put(f'http://{base_uri}/api/v1/test/method-put')
         self.assertEqual(response.status_code, 200)
 
         response = requests.delete(f'http://{base_uri}/api/v1/test/method-delete')

@@ -124,6 +124,14 @@ class Factory {
 
         Factory::serve_api_route($path, $routes);
     }
+
+    public static function routes_map($api_routes, $test_routes) {
+        Response::ok(array(
+            "api_routes" => array_keys($api_routes), 
+            "docs_routes" => ["api/v1/docs/routes-map"],
+            "test_routes" => array_keys($test_routes),
+        ));
+    }
 }
 
 /**

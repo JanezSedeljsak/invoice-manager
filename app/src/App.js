@@ -9,6 +9,7 @@ import Register from './components/public/Register';
 import Home from './components/public/Home';
 import Users from './components/public/Users';
 import Groups from './components/public/Groups';
+import RoutesMap from './components/public/RoutesMap';
 
 /* Private components */
 import MyGroups from './components/private/MyGroups';
@@ -63,6 +64,7 @@ function App() {
             <Route path="/group/edit/:id" element={<GroupDetail />} />
             <Route path="/invoice/edit/:id" element={<GroupInvoiceForm mode="edit" goto_invoices={null} />} />
             <Route path="/invoice/detail/:id" element={<GroupInvoiceDetail />} />
+            <Route path="/docs/swagger" element={<RoutesMap />} />
             <Route path='*' element={<NotFound />} />
 
           </Routes>
