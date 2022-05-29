@@ -40,7 +40,7 @@ function Users() {
             <div className="ui relaxed divided list">
                 {filteredUsers.map(user => (
                     <div className="item" key={`user_${user.id}`}>
-                        <i className="large github middle aligned icon"></i>
+                        <i className="large user middle aligned icon"></i>
                         <div className="content">
                             <a className="header" onClick={() => showUserData(user.id)}>{user.fullname}</a>
                             <div className="description">

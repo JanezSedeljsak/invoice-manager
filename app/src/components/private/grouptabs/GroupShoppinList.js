@@ -65,7 +65,7 @@ function GroupShoppinList({ id }) {
                                 <i className="delete icon"></i>
                             </button>
                         </div>
-                        <i className="large github middle aligned icon"></i>
+                        <i className="large paperclip middle aligned icon"></i>
                         <div className="content">
                             <a className="header">{item.name}</a>
                             <div className="description">

@@ -129,14 +129,14 @@ function GroupInvocies({ id }) {
                             </button>
                         </div>
 
-                        <i className="large github middle aligned icon"></i>
+                        <i className="large dollar middle aligned icon"></i>
                         <div className="content">
                             <a className="header">
                                 {invoice.fullname} - {invoice.store_name}
                             </a>
                             <div className="description">
-                                <Moment format="D.M.YYYY">{invoice.date}</Moment>
-                                - {invoice.amount}€
+                                <b><Moment format="D.M.YYYY">{invoice.date}</Moment>{" - "}{invoice.amount}€</b>
+                                <br/><p>{invoice.notes}</p>
                             </div>
                         </div>
                     </div>

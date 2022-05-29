@@ -68,7 +68,7 @@ function GroupInvoiceForm({ mode, group_id, goto_invoices }) {
         const amount = amountRef.current.value;
         const notes = notesRef.current.value;
 
-        const [status, _] = await Requests.updateInvoice(token, params.id, store, amount, notes, invoiceImage?.base64 ?? '/');
+        const [status, _] = await Requests.updateInvoice(token, params.id, store, amount, notes, invoiceImage?.base64 ?? invoice?.image);
         if (status === 200) {
             addToast('Update success!', { appearance: 'success', autoDismiss: true, autoDismissTimeout: 2500 });
         } else {

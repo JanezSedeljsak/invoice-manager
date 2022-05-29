@@ -7,9 +7,12 @@
 - User Groups modal [15min] # done
 - Group users modal [15min] # done
 - Money spent graph [30min] # done
+- Money spent store ghraph [20min] # done
+ 
+- Add image to invocie [30min] # done
+- Fix images [20min] # done
 
-- Add image to user profile [30min]
-- Fix images [20min]
+- Delete invoice [15min]
 - Server validation [30min]
 - Reports [1h]
 

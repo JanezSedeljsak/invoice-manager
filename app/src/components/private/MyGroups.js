@@ -5,11 +5,15 @@ import { useStore } from '../../store';
 import { useToasts } from 'react-toast-notifications';
 import CreateGroupModal from '../modals/CreateGroupModal';
 import { useNavigate } from 'react-router-dom';
+import GroupMembersModal from '../modals/GroupMembersModal';
 
 function Groups() {
     const [groups, setGroups] = useState([]);
     const [filteredGroups, setFilteredGroups] = useState([]);
     const [visibleModal, setVisibleModal] = useState(false);
+
+    const [selectedGroup, setSelectedGroup] = useState(null);
+    const [modalVisible2, setModalVisible2] = useState(false);
 
     const navigate = useNavigate();
     const token = useStore(state => state.token);
@@ -45,6 +49,11 @@ function Groups() {
         alert('group report');
     }
 
+    function showGroupMembers(groupId) {
+        setSelectedGroup(groupId);
+        setModalVisible2(true);
+    }
+
     function createGroup() {
         setVisibleModal(true);
     }
@@ -56,6 +65,7 @@ function Groups() {
 
     return (
         <>
+            <GroupMembersModal visible={modalVisible2} setVisible={setModalVisible2} group_id={selectedGroup} />
             <CreateGroupModal visible={visibleModal} setVisible={setVisibleModalWrapper} />
             <div className='horizontal-container ui'>
                 <div className="ui search">
@@ -81,9 +91,9 @@ function Groups() {
                                 <i className="edit icon"></i>
                             </button>
                         </div>
-                        <i className="large github middle aligned icon"></i>
+                        <i className="large braille middle aligned icon"></i>
                         <div className="content">
-                            <a className="header">{group.name}</a>
+                            <a className="header" onClick={() => showGroupMembers(group.id)}>{group.name}</a>
                             <div className="description">
                                 <Moment format="D.M.YYYY">{group.created_at}</Moment>
                             </div>

@@ -41,7 +41,7 @@ function Groups() {
             <div className="ui relaxed divided list">
                 {filteredGroups.map(group => (
                     <div className="item" key={`group_${group.id}`}>
-                        <i className="large github middle aligned icon"></i>
+                        <i className="large braille middle aligned icon"></i>
                         <div className="content">
                             <a className="header" onClick={() => showGroupData(group.id)}>{group.name}</a>
                             <div className="description">
