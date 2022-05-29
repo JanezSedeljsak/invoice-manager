@@ -8,10 +8,10 @@ The idea of the app is solving the problem of managing group spendings (eg. coll
 the app provides a simple interface for tracking your spendings and viewing how much each member of the group has spent. You can create your 
 own groups and add people to them. Groups also have a shopping list and some insightful charts to make your life a bit easier. 
 
-You can browse the app without making an account - you can view already registered users and groups and some of their public data, but for the full experience you have to create your
-own account.
+You can browse the app without making an account - you can view already registered users and groups and some of their public data, but for the full experience you have to create your own account.
 
-The app is built with 2 technologies - `PHP` with a basic MVC structure (no framework) as the `RESTful API` and `React` (with `Semantic UI` and `zustand`) for the frontend.
+The app is built with 2 technologies - `PHP` with a basic MVC structure (no framework) for the `REST API` and `React` (with `Semantic UI` and `zustand`) for the frontend.<br/>
+Plus it uses some `Python` code to test the `API`.
 
 ## Database model
 
