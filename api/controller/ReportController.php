@@ -1,8 +1,9 @@
 <?php
 
 require_once("api/lib/fpdf.php");
+require_once("api/model/InvoiceModel.php");
 
-class PDF extends FPDF {
+class InvoiceReport extends FPDF {
   
     // Page header
     function Header() {
@@ -14,10 +15,10 @@ class PDF extends FPDF {
         $this->SetFont('Arial','B',20);
           
         // Move to the right
-        $this->Cell(80);
+        $this->Cell(70);
           
         // Header
-        $this->Cell(50,10,'Heading',1,0,'C');
+        $this->Cell(60,10,'Invoice Report',1,0,'C');
           
         // Line break
         $this->Ln(20);
@@ -41,20 +42,29 @@ class PDF extends FPDF {
 
 class ReportController {
 
-    public static function invoice() {
+    public static function invoice($id) {
         ob_end_clean();
 
-        // Instantiation of FPDF class
-        $pdf = new PDF();
+        $pdf = new InvoiceReport();
+        $invoice = InvoiceModel::get($id);
+        if (!$invoice) {
+            Response::error404(); // record not found
+            return;
+        }
+
+        $invoice_date = new DateTime($invoice['date']);
         
-        // Define alias for number of pages
         $pdf->AliasNbPages();
         $pdf->AddPage();
         $pdf->SetFont('Times','',14);
         
-        for($i = 1; $i <= 30; $i++)
-            $pdf->Cell(0, 10, 'line number ' 
-                    . $i, 0, 1);
+        $pdf->Cell(0, 10, 'Amount: '.$invoice['amount'].'e', 0, 1);
+        $pdf->Cell(0, 10, 'Group: '.$invoice['group_name'], 0, 1);
+        $pdf->Cell(0, 10, 'Store: '.$invoice['store_name'], 0, 1);
+        $pdf->Cell(0, 10, 'User: '.$invoice['fullname'].' ('.$invoice['email'].')', 0, 1);
+        $pdf->Cell(0, 10, 'Date Created: '.$invoice_date->format("d.m.Y"), 0, 1);
+        $pdf->Cell(0, 10, 'Notes: '.$invoice['notes'], 0, 1);
+
         $pdf->Output();
     }
     

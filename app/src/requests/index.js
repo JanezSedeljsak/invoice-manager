@@ -10,6 +10,10 @@ function generateFormData(jsonData) {
 }
 
 class Requests {
+    static _get_api_uri() {
+        return API_URI;
+    }
+
     static async login(email, password) {
         const response = await fetch(`${API_URI}/api/v1/login`, {
             method: 'POST',

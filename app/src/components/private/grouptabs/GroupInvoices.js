@@ -82,10 +82,6 @@ function GroupInvocies({ id }) {
                         Most popular store: <b>{mainStore}</b> - visited: <b>{storeMap.get(mainStore)}x</b> times
                     </div>
                 </div>
-                <button className="ui yellow button">
-                    <i className="print icon"></i>
-                    Summary report
-                </button>
             </div>
 
         )

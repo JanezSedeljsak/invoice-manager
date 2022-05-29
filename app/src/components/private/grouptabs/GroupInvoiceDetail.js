@@ -27,6 +27,11 @@ function GroupInvoiceForm() {
         setInvoice(invoiceResponse);
     }
 
+    async function generatePDF() {
+        const uri = Requests._get_api_uri();
+        window.open(`${uri}/api/v1/analysis/invoice?id=${params.id}`, "_blank");
+    }
+
     return (
         <>
             <div className="ui raised segment">
@@ -86,6 +91,7 @@ function GroupInvoiceForm() {
                 </div>
             </div>
             <button className={"ui red button"} onClick={() => navigate(-1)} type="button">Go back</button>
+            <button className={"ui teal button"} onClick={generatePDF} type="button">To PDF</button>
         </>
 
     );

@@ -45,10 +45,6 @@ function Groups() {
         navigate(`/group/edit/${groupId}`);
     }
 
-    function groupReport(groupId) {
-        alert('group report');
-    }
-
     function showGroupMembers(groupId) {
         setSelectedGroup(groupId);
         setModalVisible2(true);
@@ -84,9 +80,6 @@ function Groups() {
                 {filteredGroups.map(group => (
                     <div className="item" key={`group_${group.id}`}>
                         <div className="right floated content">
-                            <button className="ui yellow icon button" onClick={() => groupReport(group.id)}>
-                                <i className="print icon"></i>
-                            </button>
                             <button className="ui icon button" onClick={() => editGroup(group.id)}>
                                 <i className="edit icon"></i>
                             </button>

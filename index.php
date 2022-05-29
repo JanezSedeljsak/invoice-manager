@@ -66,9 +66,7 @@ $api_routes = array(
 
     "api/v1/stores" => req(['GET'], fn() => StoreController::all()), # ok
 
-    "api/v1/analysis/group/summary" => req(['GET'], fn($id) => ReportController::group_summary($id), true), # todo
     "api/v1/analysis/invoice" => req(['GET'], fn($id) => ReportController::invoice($id), true), # todo
-    "api/v1/analysis/profile/invoices" => req(['GET'], fn() => ReportController::user_invoices()), # todo
 );
 
 $test_routes = array(
