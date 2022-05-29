@@ -17,7 +17,7 @@ $path = isset($_GET['path']) ? $_GET['path'] : '/';
 
 // Allow Cors
 header("Access-Control-Allow-Origin: http://localhost:3000");
-header("Access-Control-Allow-Methods: GET,POST,PUT,OPTIONS");
+header("Access-Control-Allow-Methods: GET,POST,PUT,DELETE,OPTIONS");
 header("Access-Control-Allow-Headers:*");
 
 if($_SERVER['REQUEST_METHOD'] == 'OPTIONS'){

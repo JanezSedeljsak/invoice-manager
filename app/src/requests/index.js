@@ -93,6 +93,16 @@ class Requests {
         return [response.status, json];
     }
 
+    static async deleteListItem(item_id, token) {
+        const response = await fetch(`${API_URI}/api/v1/shopping-item?id=${item_id}`, {
+            method: 'DELETE',
+            headers: {'Authorization': token }
+        });
+        if (response.status !== 200) return [response.status, null];
+        const json = await response.json();
+        return [response.status, json];
+    }
+
     static async createGroup(token, name) {
         const response = await fetch(`${API_URI}/api/v1/group/create`, {
             method: 'POST',

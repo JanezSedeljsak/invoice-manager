@@ -25,11 +25,30 @@ function GroupShoppinList({ id }) {
         setItems(itemsResponse);
     }
 
+    async function deleteItem(id) {
+        if (!window.confirm("Are you sure you want to delete item from list?")) {
+            return;
+        }
+
+        const [status, _] = await Requests.deleteListItem(id, token);
+        if (status !== 200) {
+            addToast('Failed deleting shopping item!', { appearance: 'error', autoDismiss: true, autoDismissTimeout: 2500 });
+            return;
+        }
+
+        getData();
+    }
+
     return (
         <>
             <div className="ui relaxed divided list">
                 {items.map(item => (
                     <div className="item" key={`item_${item.id}`}>
+                        <div className="right floated content">
+                            <button className="ui red icon button" onClick={() => deleteItem(item.id)}>
+                                <i className="delete icon"></i>
+                            </button>
+                        </div>
                         <i className="large github middle aligned icon"></i>
                         <div className="content">
                             <a className="header">{item.name}</a>
