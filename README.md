@@ -18,7 +18,19 @@ The app is built with 2 technologies - `PHP` with a basic MVC structure (no fram
 ![dbmodel](https://user-images.githubusercontent.com/43420276/170886682-42af5024-af2c-42d2-b607-7184a9f70af7.png)
 
 
-## Site-map
+## Sitemap
+
+#### Public sitemap
+As a public user you can visit groups and users and view which user is in which group.
+
+![public_sitemap](https://user-images.githubusercontent.com/43420276/170889487-2d8741f3-dec4-4325-bdaf-1dad79039bb3.png)
+
+#### Auth sitemap
+When you register on <b>Invoice manager</b> you can create groups view your invoices and your spendings summary. You can add members
+to your groups, creating shopping lists and view the total spendings of each user in the group.
+
+![auth_sitemap](https://user-images.githubusercontent.com/43420276/170889484-7c1d5595-d03e-4d6f-a331-81b553e55c8e.png)
+
 
 ## Local testing
 - Clone the repository with `git clone https://github.com/JanezSedeljsak/invoice-manager.git`
