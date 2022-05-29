@@ -4,8 +4,8 @@
 - Add shopping item [15min] # done
 - Delete shopping item [10min] # done
 
-- User Groups modal [15min]
-- Group users modal [15min]
+- User Groups modal [15min] # done
+- Group users modal [15min] # done
 
 - Money spent graph [30min]
 

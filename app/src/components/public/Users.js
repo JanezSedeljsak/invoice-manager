@@ -1,22 +1,26 @@
 import Requests from '../../requests';
 import { useState, useEffect } from 'react';
+import UserGroupsModal from '../modals/UserGroupsModal';
 
 function Users() {
     const [users, setUsers] = useState([]);
     const [filteredUsers, setFilteredUsers] = useState([]);
+    const [selectedUser, setSelectedUser] = useState(null);
+    const [modalVisible, setModalVisible] = useState(false);
 
     useEffect(() => {
         getData();
     }, []);
 
     async function getData() {
-        const usersResponse = await Requests.users() 
+        const usersResponse = await Requests.users()
         setUsers(usersResponse);
         setFilteredUsers(usersResponse);
     }
 
     async function showUserData(userId) {
-        alert('showing user data....');
+        setSelectedUser(userId);
+        setModalVisible(true);
     }
 
     function filterUsers(keyword) {
@@ -26,6 +30,7 @@ function Users() {
 
     return (
         <>
+            <UserGroupsModal visible={modalVisible} setVisible={setModalVisible} user_id={selectedUser} />
             <div className="ui search">
                 <div className="ui icon input">
                     <input className="prompt" type="text" onKeyUp={event => filterUsers(event.target.value)} placeholder="Search users..." />

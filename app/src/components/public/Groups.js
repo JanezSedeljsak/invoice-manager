@@ -1,10 +1,13 @@
 import Requests from '../../requests';
 import { useState, useEffect } from 'react';
 import Moment from 'react-moment';
+import GroupMembersModal from '../modals/GroupMembersModal';
 
 function Groups() {
     const [groups, setGroups] = useState([]);
     const [filteredGroups, setFilteredGroups] = useState([]);
+    const [selectedGroup, setSelectedGroup] = useState(null);
+    const [modalVisible, setModalVisible] = useState(false);
 
     useEffect(() => {
         getData();
@@ -17,7 +20,8 @@ function Groups() {
     }
 
     async function showGroupData(groupId) {
-        alert('showing group data....');
+        setSelectedGroup(groupId);
+        setModalVisible(true);
     }
 
     function filterGroups(keyword) {
@@ -27,6 +31,7 @@ function Groups() {
 
     return (
         <>
+            <GroupMembersModal visible={modalVisible} setVisible={setModalVisible} group_id={selectedGroup} />
             <div className="ui search">
                 <div className="ui icon input">
                     <input className="prompt" type="text" onKeyUp={event => filterGroups(event.target.value)} placeholder="Search groups..." />

@@ -73,6 +73,13 @@ class Requests {
         return [response.status, json];
     }
 
+    static async userGroups(user_id) {
+        const response = await fetch(`${API_URI}/api/v1/user/groups?id=${user_id}`);
+        if (response.status !== 200) return [response.status, null];
+        const json = await response.json();
+        return [response.status, json];
+    }
+
     static async groupInvoices(group_id, token) {
         const response = await fetch(`${API_URI}/api/v1/group/invoices?id=${group_id}`, {
             method: 'GET',
