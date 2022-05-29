@@ -6,11 +6,11 @@
 
 - User Groups modal [15min] # done
 - Group users modal [15min] # done
+- Money spent graph [30min] # done
 
-- Money spent graph [30min]
-
+- Add image to user profile [30min]
+- Fix images [20min]
+- Server validation [30min]
 - Reports [1h]
 
-# maybe
-- Add image to user profile [30min]
-- Server validation [60min]
+

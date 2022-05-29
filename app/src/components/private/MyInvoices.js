@@ -31,10 +31,6 @@ function Invoices() {
         setFilteredInvoices(invoiceResponse);
     }
 
-    async function showInvoiceData(groupId) {
-        alert('showing invoice data....');
-    }
-
     function filterInvoices() {
         const store = storeFilterRef.current.value;
         const group = groupFilterRef.current.value;
@@ -127,7 +123,7 @@ function Invoices() {
                         </div>
                         <i className="large github middle aligned icon"></i>
                         <div className="content">
-                            <a className="header" onClick={() => showInvoiceData(invoice.id)}>
+                            <a className="header">
                                 {invoice.group_name} - {invoice.store}
                             </a>
                             <div className="description">

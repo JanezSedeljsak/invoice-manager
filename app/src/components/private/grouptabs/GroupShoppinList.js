@@ -25,7 +25,6 @@ function GroupShoppinList({ id }) {
 
     async function getData() {
         const [status, itemsResponse] = await Requests.groupShoppingList(id, token);
-        console.log(itemsResponse);
         if (status !== 200) {
             addToast('Error fetching shopping list!', { appearance: 'error', autoDismiss: true, autoDismissTimeout: 2500 });
             return;

@@ -697,6 +697,127 @@ class ApiTests(unittest.TestCase):
 
         response = requests.get(f'http://{base_uri}/api/v1/shopping-item?id={first_item["id"]}', headers=headers)
         self.assertEqual(response.status_code, 404)
+    
+    def test_a9_bulk_create_group_data(self):
+        """Create a lot of data for a group"""
+
+        token = ApiTests.get_token_from_login('john.doe@gmail.com', 'geslo123')
+        self.assertNotEqual(None, token) # should get valid token from response
+        headers = {'Authorization': token}
+
+        data = {'name': 'Rojstni dan'}
+        response = requests.post(f'http://{base_uri}/api/v1/group/create', headers=headers, data=data)
+        self.assertEqual(response.status_code, 200)
+
+        group_id = ApiTests.get_group_id_by_name('Rojstni dan')
+        self.assertNotEqual(-1, group_id)
+
+        #### add 3 other users
+
+        data = {'user_id': ApiTests.get_user_id_by_email('janez.sedeljsak@gmail.com')}
+        self.assertNotEqual(-1, data['user_id'])
+
+        response = requests.post(f'http://{base_uri}/api/v1/group/add-user?id={group_id}', headers=headers, data=data)
+        self.assertEqual(response.status_code, 200)
+
+        data = {'user_id': ApiTests.get_user_id_by_email('francka@gmail.com')}
+        self.assertNotEqual(-1, data['user_id'])
+
+        response = requests.post(f'http://{base_uri}/api/v1/group/add-user?id={group_id}', headers=headers, data=data)
+        self.assertEqual(response.status_code, 200)
+
+        data = {'user_id': ApiTests.get_user_id_by_email('janez.novak@gmail.com')}
+        self.assertNotEqual(-1, data['user_id'])
+
+        response = requests.post(f'http://{base_uri}/api/v1/group/add-user?id={group_id}', headers=headers, data=data)
+        self.assertEqual(response.status_code, 200)
+
+        data = {'user_id': ApiTests.get_user_id_by_email('lorem.ipsum@gmail.com')}
+        self.assertNotEqual(-1, data['user_id'])
+
+        response = requests.post(f'http://{base_uri}/api/v1/group/add-user?id={group_id}', headers=headers, data=data)
+        self.assertEqual(response.status_code, 200)
+
+        data = [
+            {'name': 'Mleko', 'group_id': group_id},
+            {'name': 'Kruh', 'group_id': group_id},
+            {'name': 'Vino', 'group_id': group_id},
+            {'name': 'Čips', 'group_id': group_id},
+            {'name': 'Čevapi', 'group_id': group_id},
+            {'name': 'Hrenovke', 'group_id': group_id},
+            {'name': 'Majoneza', 'group_id': group_id},
+            {'name': 'Origano', 'group_id': group_id},
+            {'name': 'Še več mleka', 'group_id': group_id}
+        ]
+
+        for item in data:
+            response = requests.post(f'http://{base_uri}/api/v1/shopping-item/create', headers=headers, data=item)
+            self.assertEqual(response.status_code, 200)
+
+        spar = ApiTests.get_store_id_by_name('Spar')
+        tus = ApiTests.get_store_id_by_name('Tuš')
+        hofer = ApiTests.get_store_id_by_name('Hofer')
+        intersport = ApiTests.get_store_id_by_name('Intersport')
+
+        data = [
+            {'image': '/', 'group_id': group_id, 'store_id': spar, 'amount': 30, 'notes': 'Testiranje vnosa'},
+            {'image': '/', 'group_id': group_id, 'store_id': spar, 'amount': 50, 'notes': 'Testiranje vnosa'},
+            {'image': '/', 'group_id': group_id, 'store_id': tus, 'amount': 10, 'notes': 'Testiranje vnosa'},
+            {'image': '/', 'group_id': group_id, 'store_id': tus, 'amount': 50, 'notes': 'Testiranje vnosa'},
+            {'image': '/', 'group_id': group_id, 'store_id': spar, 'amount': 130, 'notes': 'Testiranje vnosa'},
+            {'image': '/', 'group_id': group_id, 'store_id': hofer, 'amount': 20, 'notes': 'Testiranje vnosa'}
+        ]
+
+        for item in data:
+            response = requests.post(f'http://{base_uri}/api/v1/invoice/create', headers=headers, data=item)
+            self.assertEqual(response.status_code, 200)
+
+        token = ApiTests.get_token_from_login('janez.sedeljsak@gmail.com', 'geslo123')
+        self.assertNotEqual(None, token) # should get valid token from response
+        headers = {'Authorization': token}
+
+        data = [
+            {'image': '/', 'group_id': group_id, 'store_id': spar, 'amount': 50, 'notes': 'Testiranje vnosa'},
+            {'image': '/', 'group_id': group_id, 'store_id': hofer, 'amount': 80, 'notes': 'Testiranje vnosa'},
+            {'image': '/', 'group_id': group_id, 'store_id': hofer, 'amount': 17, 'notes': 'Testiranje vnosa'},
+            {'image': '/', 'group_id': group_id, 'store_id': hofer, 'amount': 22, 'notes': 'Testiranje vnosa'},
+            {'image': '/', 'group_id': group_id, 'store_id': intersport, 'amount': 35, 'notes': 'Testiranje vnosa'},
+            {'image': '/', 'group_id': group_id, 'store_id': intersport, 'amount': 20, 'notes': 'Testiranje vnosa'}
+        ]
+
+        for item in data:
+            response = requests.post(f'http://{base_uri}/api/v1/invoice/create', headers=headers, data=item)
+            self.assertEqual(response.status_code, 200)
+
+        token = ApiTests.get_token_from_login('francka@gmail.com', 'geslo123')
+        self.assertNotEqual(None, token) # should get valid token from response
+        headers = {'Authorization': token}
+
+        data = [
+            {'image': '/', 'group_id': group_id, 'store_id': tus, 'amount': 50, 'notes': 'Testiranje vnosa'},
+            {'image': '/', 'group_id': group_id, 'store_id': hofer, 'amount': 80, 'notes': 'Testiranje vnosa'},
+            {'image': '/', 'group_id': group_id, 'store_id': hofer, 'amount': 200, 'notes': 'Testiranje vnosa'},
+        ]
+
+        for item in data:
+            response = requests.post(f'http://{base_uri}/api/v1/invoice/create', headers=headers, data=item)
+            self.assertEqual(response.status_code, 200)
+
+
+        token = ApiTests.get_token_from_login('janez.novak@gmail.com', 'geslo123')
+        self.assertNotEqual(None, token) # should get valid token from response
+        headers = {'Authorization': token}
+
+        data = [
+            {'image': '/', 'group_id': group_id, 'store_id': intersport, 'amount': 75, 'notes': 'Testiranje vnosa'},
+        ]
+
+        for item in data:
+            response = requests.post(f'http://{base_uri}/api/v1/invoice/create', headers=headers, data=item)
+            self.assertEqual(response.status_code, 200)
+
+
+
 
 
 

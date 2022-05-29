@@ -37,7 +37,6 @@ function GroupInvoiceForm({ mode, group_id, goto_invoices }) {
             return;
         }
 
-        console.log(invoiceResponse);
         setInvoice(invoiceResponse);
     }
 
@@ -77,7 +76,7 @@ function GroupInvoiceForm({ mode, group_id, goto_invoices }) {
 
     return (
         <>
-            <form className={"ui form"} onSubmit={mode == 'create' ? callInvoiceCreate : callInvoiceEdit}>
+            <form className={"ui form"} onSubmit={mode === 'create' ? callInvoiceCreate : callInvoiceEdit}>
                 <div className="ui raised segment">
                     <a className="ui teal ribbon label">Invoice form</a><br /><br />
                     <div className={"field"}>

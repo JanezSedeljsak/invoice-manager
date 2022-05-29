@@ -21,10 +21,6 @@ function GroupInvocies({ id }) {
         getData();
     }, []);
 
-    function showInvoiceData() {
-        alert('showing invoice data...');
-    }
-
     async function getData() {
         const [status, invoiceResponse] = await Requests.groupInvoices(id, token);
         if (status !== 200) {
@@ -130,7 +126,7 @@ function GroupInvocies({ id }) {
                             : null}
                         <i className="large github middle aligned icon"></i>
                         <div className="content">
-                            <a className="header" onClick={() => showInvoiceData(invoice.id)}>
+                            <a className="header">
                                 {invoice.fullname} - {invoice.store_name}
                             </a>
                             <div className="description">

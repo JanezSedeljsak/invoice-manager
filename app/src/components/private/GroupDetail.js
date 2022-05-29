@@ -1,6 +1,4 @@
 import { useState } from 'react';
-import { useStore } from '../../store';
-import { useToasts } from 'react-toast-notifications';
 import { useParams } from 'react-router-dom';
 
 import GroupMain from './grouptabs/GroupMain';
@@ -11,10 +9,7 @@ import GroupInvoiceForm from './grouptabs/GroupInvoiceForm';
 
 function GroupDetail() {
     const [active, setActive] = useState('main');
-
     const { id } = useParams();
-    const token = useStore(state => state.token);
-    const { addToast } = useToasts();
 
     function getTabContent() {
         switch (active) {
@@ -37,7 +32,7 @@ function GroupDetail() {
                     Members
                 </a>
                 <a className={`item ${active === 'list' ? 'active' : ''}`} onClick={() => setActive('list')}>
-                    Shopping list
+                    List
                 </a>
                 <a className={`item ${active === 'invoices' ? 'active' : ''}`} onClick={() => setActive('invoices')}>
                     Invoices

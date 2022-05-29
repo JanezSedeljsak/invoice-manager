@@ -4,7 +4,9 @@
   "private": true,
   "homepage": "/app/build",
   "dependencies": {
+    "chart.js": "^3.8.0",
     "react": "^18.1.0",
+    "react-chartjs-2": "^4.1.0",
     "react-dom": "^18.1.0",
     "react-moment": "^1.1.2",
     "react-router": "^6.3.0",

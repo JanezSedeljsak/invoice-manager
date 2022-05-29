@@ -1,15 +1,17 @@
 import Requests from '../../../requests';
 import { useState, useEffect } from 'react';
-import Moment from 'react-moment';
-import { useStore } from '../../../store';
 import { useToasts } from 'react-toast-notifications';
 import CreateGroupMemberModal from '../../modals/CreateGroupMemberModal';
+import UserGroupsModal from '../../modals/UserGroupsModal';
 
 function GroupMembers({ id }) {
     const { addToast } = useToasts();
     const [users, setUsers] = useState([]);
     const [filteredUsers, setFilteredUsers] = useState([]);
+
     const [modalVisible, setModalVisible] = useState(false);
+    const [modalVisible2, setModalVisible2] = useState(false);
+    const [selectedUser, setSelectedUser] = useState(null);
 
     useEffect(() => {
         getData();
@@ -34,7 +36,8 @@ function GroupMembers({ id }) {
     }
 
     async function showUserData(userId) {
-        alert('showing user data....');
+        setSelectedUser(userId);
+        setModalVisible2(true);
     }
 
     function filterUsers(keyword) {
@@ -44,6 +47,7 @@ function GroupMembers({ id }) {
 
     return (
         <>
+            <UserGroupsModal visible={modalVisible2} setVisible={setModalVisible2} user_id={selectedUser} />
             <CreateGroupMemberModal visible={modalVisible} setVisible={setModalVisibleWrapper} group_id={id} />
             <div className='horizontal-container ui'>
                 <div className="ui search">
