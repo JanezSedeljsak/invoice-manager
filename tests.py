@@ -1,15 +1,7 @@
 import uuid
 import unittest
 import os
-from dotenv import load_dotenv # pip install python-dotenv
-
-load_dotenv()
-
-try:
-    import requests
-except ImportError:
-    MISSING_REQUESTS = """[WARNING] Your system is missing the Requests package."""
-    print('\033[91m' + '\033[1m' + MISSING_REQUESTS + '\033[0m')
+import requests
 
 base_uri = f"{os.getenv('host') or 'localhost'}"
 

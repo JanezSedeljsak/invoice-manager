@@ -12,12 +12,21 @@ class Factory {
 
     public static function req_auth($allowed, $func, $req_id=false) {
         $headers = apache_request_headers();
-        if (!isset($headers['Authorization'])) {
+        $authHeader = null;
+        if (isset($headers['Authorization'])) {
+            $authHeader = $headers['Authorization'];
+        }
+
+        if (isset($headers['authorization'])) {
+            $authHeader = $headers['authorization'];
+        }
+
+        if ($authHeader === null) {
             Response::error401();
             return;
         }
 
-        if (!AuthModel::validate($headers['Authorization'])) {
+        if (!AuthModel::validate($authHeader)) {
             Response::error401();
             return;
         }
@@ -49,12 +58,21 @@ class Factory {
 
     public static function select_method_auth($allowed_methods, $req_id=false) {
         $headers = apache_request_headers();
-        if (!isset($headers['Authorization'])) {
+        $authHeader = null;
+        if (isset($headers['Authorization'])) {
+            $authHeader = $headers['Authorization'];
+        }
+
+        if (isset($headers['authorization'])) {
+            $authHeader = $headers['authorization'];
+        }
+
+        if ($authHeader === null) {
             Response::error401();
             return;
         }
 
-        if (!AuthModel::validate($headers['Authorization'])) {
+        if (!AuthModel::validate($authHeader)) {
             Response::error401();
             return;
         }
